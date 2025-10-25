@@ -9,7 +9,7 @@ export default function HomePage() {
             Packpal
           </span>
           <div className="mt-3 text-stone-400">
-            Your smart, collaborative packing lists. ✈️🧳
+            Your poopy, collaborative packing lists. ✈️🧳
           </div>
         </div>
 

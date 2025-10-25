@@ -59,7 +59,7 @@ export default function FriendsPanel() {
         onClose={() => setInviteOpen(false)}
         friend={selectedFriend}
         onInvited={({ access }) =>
-          setLastInvite({ friendName: selectedFriend?.name || 'Friend', access })
+          setLastInvite({ friendName: selectedFriend!.name, access })
         }
       />
     </div>

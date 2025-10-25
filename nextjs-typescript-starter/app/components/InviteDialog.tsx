@@ -31,7 +31,7 @@ export default function InviteDialog({ open, onClose, friend, onInvited }: Props
     }
   }, [open]);
 
-  const trips = useMemo(() => sampleTrips, []);
+  const trips = sampleTrips;
 
   if (!open) return null;
 

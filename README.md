@@ -34,6 +34,22 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+### Environment variables
+
+Copy `.env.example` to `.env.local` and fill in real values before running the dev server.
+
+```
+cp .env.example .env.local
+# edit .env.local and replace placeholders
+```
+
+Required variables for local development:
+
+- `NEXTAUTH_SECRET` — a long random string used by Auth.js/NextAuth. For dev you can use a simple value but rotate to a secure random value in production.
+- `DATABASE_URL` or `POSTGRES_URL` — your Postgres connection string.
+
+If you prefer not to use `.env.local`, set these variables in your shell before running the dev server.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

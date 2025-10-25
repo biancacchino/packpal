@@ -5,21 +5,22 @@ export const authConfig = {
     signIn: '/login',
   },
   // Required in middleware and route handlers for Auth.js v5
-  secret: process.env.AUTH_SECRET,
+  // prefer NEXTAUTH_SECRET (standard) but fall back to AUTH_SECRET if present
+  secret: process.env.NEXTAUTH_SECRET ?? process.env.AUTH_SECRET,
   providers: [
     // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
     // while this file is also used in non-Node.js environments
   ],
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      let isLoggedIn = !!auth?.user;
-      let isOnDashboard = nextUrl.pathname.startsWith('/protected');
+    authorized(params) {
+      // Keep this simple and return a boolean to satisfy types.
+      // params: { request: NextRequest; auth: Session | null }
+      const { request, auth } = params as any;
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = request.nextUrl?.pathname?.startsWith('/protected');
 
       if (isOnDashboard) {
-        if (isLoggedIn) return true;
-        return false; // Redirect unauthenticated users to login page
-      } else if (isLoggedIn) {
-        return Response.redirect(new URL('/protected', nextUrl));
+        return isLoggedIn;
       }
 
       return true;

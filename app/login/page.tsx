@@ -1,7 +1,7 @@
-import Link from 'next/link';
-import { Form } from 'app/form';
-import { signIn } from 'app/auth';
-import { SubmitButton } from 'app/submit-button';
+import Link from "next/link";
+import { Form } from "app/form";
+import { LoginFormClient } from "./LoginFormClient";
+import { SubmitButton } from "app/submit-button";
 
 export default function Login() {
   return (
@@ -13,25 +13,17 @@ export default function Login() {
             Use your email and password to sign in
           </p>
         </div>
-        <Form
-          action={async (formData: FormData) => {
-            'use server';
-            await signIn('credentials', {
-              redirectTo: '/protected',
-              email: formData.get('email') as string,
-              password: formData.get('password') as string,
-            });
-          }}
-        >
-          <SubmitButton>Sign in</SubmitButton>
+        <div>
+          {/* Client-side sign-in form to avoid server-action headers() issues */}
+          <LoginFormClient />
           <p className="text-center text-sm text-gray-600">
             {"Don't have an account? "}
             <Link href="/register" className="font-semibold text-gray-800">
               Sign up
             </Link>
-            {' for free.'}
+            {" for free."}
           </p>
-        </Form>
+        </div>
       </div>
     </div>
   );

@@ -79,9 +79,6 @@ export default function FriendsPanel() {
               >
                 Invite
               </button>
-              <button className="px-4 py-2 bg-stone-700 rounded-md hover:bg-stone-600 focus:outline-none focus:ring-2 focus:ring-stone-500" aria-label={`Chat with ${f.name}`}>
-                Chat
-              </button>
             </div>
           </li>
         ))}

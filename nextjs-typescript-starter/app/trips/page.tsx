@@ -1,3 +1,7 @@
+"use client";
+
+import SideNavShell from "app/components/SideNavShell";
+
 export default function TripsListPage() {
   // Placeholder list of trips for now
   const sampleTrips = [
@@ -5,7 +9,7 @@ export default function TripsListPage() {
     { id: "sample-2", name: "NYC Work Trip", dates: "Nov 4–8" },
   ];
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
+    <SideNavShell>
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         <h1 className="text-2xl font-bold mb-4">Your Trips</h1>
         <div className="grid gap-4 sm:grid-cols-2">
@@ -28,6 +32,6 @@ export default function TripsListPage() {
           </a>
         </div>
       </div>
-    </div>
+    </SideNavShell>
   );
 }

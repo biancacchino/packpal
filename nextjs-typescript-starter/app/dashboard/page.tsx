@@ -4,13 +4,14 @@ import Link from "next/link";
 import TripCarousel from "app/components/TripCarousel";
 import FriendsPanel from "app/components/FriendsPanel";
 import ListsPanel from "app/components/ListsPanel";
+import SideNavShell from "app/components/SideNavShell";
 
 export default function DashboardPage() {
   // placeholder data
   const user = { name: "user" };
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
+    <SideNavShell>
       <header className="border-b border-stone-800">
         {/* Full-width top bar so brand sits at true top-left of the viewport */}
         <div className="px-4 sm:px-6 py-4">
@@ -64,6 +65,6 @@ export default function DashboardPage() {
           </div>
         </section>
       </main>
-    </div>
+    </SideNavShell>
   );
 }

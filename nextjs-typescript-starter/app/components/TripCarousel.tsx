@@ -3,20 +3,24 @@
 import { useState } from "react";
 import Link from "next/link";
 
-const sampleTrips = [
+export type TripItem = { id: string; title: string; dates: string };
+
+const defaultTrips: TripItem[] = [
   { id: "1", title: "Cancún Trip 🌴", dates: "Mar 1–7" },
   { id: "2", title: "NYC Weekend 🗽", dates: "Apr 10–12" },
   { id: "3", title: "Banff Ski Trip ⛷️", dates: "Feb 15–20" },
 ];
 
-export default function TripCarousel() {
+export default function TripCarousel({ trips = defaultTrips }: { trips?: TripItem[] }) {
   const [index, setIndex] = useState(0);
 
+  const count = trips.length;
+
   function prev() {
-    setIndex((i) => (i - 1 + sampleTrips.length) % sampleTrips.length);
+    setIndex((i) => (i - 1 + count) % count);
   }
   function next() {
-    setIndex((i) => (i + 1) % sampleTrips.length);
+    setIndex((i) => (i + 1) % count);
   }
 
   return (
@@ -34,7 +38,7 @@ export default function TripCarousel() {
             className="flex gap-6 transition-transform duration-300 ease-out"
             style={{ transform: `translateX(-${index * 100}%)` }}
           >
-            {sampleTrips.map((t) => (
+            {trips.map((t) => (
               <article key={t.id} className="min-w-full bg-stone-800 rounded-xl p-6 md:p-8">
                 <h4 className="text-xl md:text-2xl font-semibold text-white">{t.title}</h4>
                 <p className="text-stone-300 text-base md:text-lg mt-2">{t.dates}</p>
@@ -60,7 +64,7 @@ export default function TripCarousel() {
         </button>
       </div>
       <div className="mt-4 flex justify-center gap-2">
-        {sampleTrips.map((_, i) => (
+        {trips.map((_, i) => (
           <button
             key={i}
             onClick={() => setIndex(i)}

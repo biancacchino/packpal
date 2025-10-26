@@ -1,13 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import TripCarousel from "app/components/TripCarousel";
+import { useEffect, useMemo, useState } from "react";
+import TripCarousel, { type TripItem } from "app/components/TripCarousel";
+import TripGrid from "app/components/TripGrid";
+import TripList from "app/components/TripList";
 import FriendsPanel from "app/components/FriendsPanel";
 import ListsPanel from "app/components/ListsPanel";
 
 export default function DashboardPage() {
   // placeholder data
   const user = { name: "user" };
+
+  // sample trips for the dashboard section
+  const trips: TripItem[] = useMemo(
+    () => [
+      { id: "1", title: "Cancún Trip 🌴", dates: "Mar 1–7" },
+      { id: "2", title: "NYC Weekend 🗽", dates: "Apr 10–12" },
+      { id: "3", title: "Banff Ski Trip ⛷️", dates: "Feb 15–20" },
+    ],
+    []
+  );
+
+  type ViewMode = "carousel" | "grid" | "list";
+  const [view, setView] = useState<ViewMode>(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("dashboardTripViewMode") as ViewMode | null;
+      if (stored === "carousel" || stored === "grid" || stored === "list") return stored;
+    }
+    return "carousel";
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("dashboardTripViewMode", view);
+    }
+  }, [view]);
 
   return (
     <div className="min-h-screen bg-stone-900 text-stone-100">
@@ -41,8 +69,43 @@ export default function DashboardPage() {
               + New Trip
             </Link>
           </div>
-          <div className="mt-6">
-            <TripCarousel />
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-stone-400 mr-1">View:</label>
+              <div className="inline-flex rounded-lg border border-stone-700 bg-stone-800 p-1">
+                <button
+                  onClick={() => setView("carousel")}
+                  className={`px-3 py-1.5 rounded-md text-sm ${
+                    view === "carousel" ? "bg-stone-700 text-white" : "text-stone-300 hover:text-white"
+                  }`}
+                  aria-pressed={view === "carousel"}
+                >
+                  Carousel
+                </button>
+                <button
+                  onClick={() => setView("grid")}
+                  className={`px-3 py-1.5 rounded-md text-sm ${
+                    view === "grid" ? "bg-stone-700 text-white" : "text-stone-300 hover:text-white"
+                  }`}
+                  aria-pressed={view === "grid"}
+                >
+                  Grid
+                </button>
+                <button
+                  onClick={() => setView("list")}
+                  className={`px-3 py-1.5 rounded-md text-sm ${
+                    view === "list" ? "bg-stone-700 text-white" : "text-stone-300 hover:text-white"
+                  }`}
+                  aria-pressed={view === "list"}
+                >
+                  List
+                </button>
+              </div>
+            </div>
+
+            {view === "carousel" && <TripCarousel trips={trips} />} 
+            {view === "grid" && <TripGrid trips={trips} />}
+            {view === "list" && <TripList trips={trips} />}
           </div>
         </section>
 

@@ -131,6 +131,10 @@ export default function FriendsPage() {
         const d = await r.json();
         setFriends(Array.isArray(d.friends) ? d.friends : []);
         setSearch("");
+        // notify other parts of the app (e.g., Dashboard/SideNav) to refresh their friends view
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('friends:updated'));
+        }
       }
     } catch {}
   }

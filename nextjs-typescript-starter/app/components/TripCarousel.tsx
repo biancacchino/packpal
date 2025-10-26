@@ -3,30 +3,29 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 
-type Trip = { id: string; name: string };
+export type Trip = { id: string; name: string };
 
-export default function TripCarousel() {
+// Accept optional items to render; if not provided, fallback to fetching trips
+export default function TripCarousel({ items }: { items?: Trip[] }) {
   const [index, setIndex] = useState(0);
-  const [trips, setTrips] = useState<Trip[]>([]);
+  const [fetched, setFetched] = useState<Trip[]>([]);
 
   useEffect(() => {
+    if (items && items.length > 0) return; // skip fetch when items are provided
     (async () => {
       try {
         const res = await fetch('/api/trips', { cache: 'no-store' });
         const data = await res.json();
-        setTrips(Array.isArray(data.trips) ? data.trips : []);
+        setFetched(Array.isArray(data.trips) ? data.trips : []);
       } catch {}
     })();
-  }, []);
+  }, [items]);
 
-  const visible = useMemo(() => (trips.length > 0 ? trips : []), [trips]);
+  const visible = useMemo(() => (items && items.length ? items : fetched), [items, fetched]);
+  const count = Math.max(visible.length, 1);
 
-  function prev() {
-    setIndex((i) => (i - 1 + Math.max(visible.length, 1)) % Math.max(visible.length, 1));
-  }
-  function next() {
-    setIndex((i) => (i + 1) % Math.max(visible.length, 1));
-  }
+  function prev() { setIndex((i) => (i - 1 + count) % count); }
+  function next() { setIndex((i) => (i + 1) % count); }
 
   if (visible.length === 0) {
     return <div className="text-stone-300">No trips yet. Create one to see it here.</div>;

@@ -1,38 +1,23 @@
-import Link from 'next/link';
-import { Form } from 'app/form';
-import { signIn } from 'app/auth';
-import { SubmitButton } from 'app/submit-button';
+import { auth } from "../auth"; // ✅ import from '@/auth', not 'app/auth'
+import { redirect } from "next/navigation";
 
-export default function Login() {
+export default async function DashboardPage() {
+  const session = await auth(); // ✅ Works only in server component
+
+  // If user is not logged in, redirect to login page
+  if (!session) {
+    redirect("/login");
+  }
+
+  // You can access user data like this:
+  const user = session?.user;
+
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
-      <div className="z-10 w-full max-w-md overflow-hidden rounded-2xl border border-gray-100 shadow-xl">
-        <div className="flex flex-col items-center justify-center space-y-3 border-b border-gray-200 bg-white px-4 py-6 pt-8 text-center sm:px-16">
-          <h3 className="text-xl font-semibold">Sign In</h3>
-          <p className="text-sm text-gray-500">
-            Use your email and password to sign in
-          </p>
-        </div>
-        <Form
-          action={async (formData: FormData) => {
-            'use server';
-            await signIn('credentials', {
-              redirectTo: '/protected',
-              email: formData.get('email') as string,
-              password: formData.get('password') as string,
-            });
-          }}
-        >
-          <SubmitButton>Sign in</SubmitButton>
-          <p className="text-center text-sm text-gray-600">
-            {"Don't have an account? "}
-            <Link href="/register" className="font-semibold text-gray-800">
-              Sign up
-            </Link>
-            {' for free.'}
-          </p>
-        </Form>
-      </div>
+    <div className="p-10">
+      <h1 className="text-2xl font-bold mb-4">
+        Welcome back, {user?.name || "User"} 👋
+      </h1>
+      <p className="text-gray-600">You’re signed in with {user?.email}.</p>
     </div>
   );
 }

@@ -5,16 +5,25 @@ import Link from "next/link";
 import SideNavShell from "app/components/SideNavShell";
 import type { Share } from "app/sharesStore";
 import type { Trip } from "app/components/TripCarousel";
+import type { Friend } from "app/friendsStore";
 
 export default function FriendsPage() {
-  // Registry for demo: friend ids and names used across the app
-  const FRIENDS = useMemo(() => (
-    [
-      { id: "f1", name: "Alex" },
-      { id: "f2", name: "Sam" },
-      { id: "f3", name: "Riley" },
-    ]
-  ), []);
+  // Live friends list from API (can add more via search+add)
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [search, setSearch] = useState("");
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/friends', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) setFriends(Array.isArray(data.friends) ? data.friends : []);
+      } catch {
+        if (!abort) setFriends([]);
+      }
+    })();
+    return () => { abort = true; };
+  }, []);
 
   // Load real trips so links resolve correctly
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -60,9 +69,11 @@ export default function FriendsPage() {
   }, []);
 
   function resolveFriendIdFromQuery(q: string): string {
-    const exact = FRIENDS.find(f => f.name.toLowerCase() === q.trim().toLowerCase());
+    const norm = q.trim().toLowerCase();
+    if (!norm) return "";
+    const exact = friends.find((f: Friend) => f.name.toLowerCase() === norm);
     if (exact) return exact.id;
-    const starts = FRIENDS.find(f => f.name.toLowerCase().startsWith(q.trim().toLowerCase()));
+    const starts = friends.find((f: Friend) => f.name.toLowerCase().startsWith(norm));
     return starts?.id ?? "";
   }
 
@@ -106,6 +117,24 @@ export default function FriendsPage() {
     }
   }
 
+  async function addFriendBySearch() {
+    const name = search.trim();
+    if (!name) return;
+    try {
+      const res = await fetch('/api/friends', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      if (res.ok) {
+        const r = await fetch('/api/friends', { cache: 'no-store' });
+        const d = await r.json();
+        setFriends(Array.isArray(d.friends) ? d.friends : []);
+        setSearch("");
+      }
+    } catch {}
+  }
+
   return (
     <SideNavShell>
       <div className="max-w-6xl mx-auto px-6 py-8">
@@ -114,6 +143,26 @@ export default function FriendsPage() {
             <h1 className="text-2xl md:text-3xl font-bold">Friends</h1>
             <p className="text-stone-400 text-sm md:text-base mt-1">Trips shared with each friend</p>
           </div>
+        </div>
+
+        {/* Search & Add friends */}
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 items-stretch sm:items-end">
+          <div className="flex-1">
+            <label className="block text-xs text-stone-400 mb-1">Search or add a friend</label>
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Type a name (e.g., Alex)"
+              className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700 outline-none"
+            />
+          </div>
+          <button
+            onClick={() => void addFriendBySearch()}
+            disabled={!search.trim()}
+            className="h-10 sm:h-auto rounded bg-emerald-500 text-black font-semibold px-4 py-2 disabled:opacity-50"
+          >
+            Add friend
+          </button>
         </div>
 
         {/* Invite section */}
@@ -130,7 +179,7 @@ export default function FriendsPage() {
                 className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700 outline-none"
               />
               <datalist id="friend-options">
-                {FRIENDS.map((f) => (
+                {friends.map((f: Friend) => (
                   <option key={f.id} value={f.name} />
                 ))}
               </datalist>
@@ -173,7 +222,9 @@ export default function FriendsPage() {
         </section>
 
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {FRIENDS.map((f) => {
+          {friends
+            .filter((f) => f.name.toLowerCase().includes(search.trim().toLowerCase()))
+            .map((f) => {
             const fShares = shares.filter(s => s.friendId === f.id);
             // Deduplicate and keep only trip ids that exist
             const uniqueTripIds = Array.from(
@@ -189,19 +240,24 @@ export default function FriendsPage() {
                       const access = sh?.access ?? 'view';
                       return (
                         <li key={tid} className="flex items-center justify-between gap-3">
-                          <Link
-                            href={`/trips/${tid}`}
-                            className="flex-1 rounded px-2 py-1 text-sm text-stone-200 hover:bg-stone-800"
-                          >
-                            {tripTitle(tid)}
-                          </Link>
-                          <span className="text-[11px] uppercase tracking-wide text-stone-400">{access}</span>
-                          <button
-                            onClick={() => void uninvite(f.id, tid)}
-                            className="text-xs px-2 py-1 rounded border border-stone-700 hover:bg-stone-800"
-                          >
-                            Uninvite
-                          </button>
+                          <div className="flex items-center gap-2 flex-1">
+                            <span className="truncate text-sm text-stone-200">{tripTitle(tid)}</span>
+                            <span className="text-[11px] uppercase tracking-wide text-stone-400">{access}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Link
+                              href={`/trips/${tid}`}
+                              className="text-xs px-2 py-1 rounded bg-stone-800 border border-stone-700 hover:bg-stone-700"
+                            >
+                              View
+                            </Link>
+                            <button
+                              onClick={() => void uninvite(f.id, tid)}
+                              className="text-xs px-2 py-1 rounded border border-stone-700 hover:bg-stone-800"
+                            >
+                              Uninvite
+                            </button>
+                          </div>
                         </li>
                       );
                     })

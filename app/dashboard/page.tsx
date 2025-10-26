@@ -1,16 +1,8 @@
 export const runtime = "nodejs"; // ✅ fix: force Node runtime
 
-import { auth } from "app/auth";
-import { redirect } from "next/navigation";
 import SignOutButton from "../protected/SignOutButtonClient";
 
-export default async function DashboardPage() {
-  const session = await auth();
-
-  if (!session) {
-    redirect("/login");
-  }
-
+export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
@@ -19,7 +11,7 @@ export default async function DashboardPage() {
           <SignOutButton />
         </div>
         <div className="bg-gray-900 rounded-lg p-6">
-          <p className="text-lg mb-4">Welcome back, {session.user?.email}</p>
+          <p className="text-lg mb-4">Welcome back!</p>
         </div>
       </div>
     </div>

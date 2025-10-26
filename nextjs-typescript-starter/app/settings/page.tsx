@@ -36,6 +36,9 @@ export default function SettingsPage() {
       const d = await res.json();
       setUser(d.user);
       setMsg('Saved');
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('user:updated'));
+      }
     } catch {
       setError('Failed to save changes');
     } finally {

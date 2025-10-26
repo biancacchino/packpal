@@ -12,8 +12,19 @@ import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
   const router = useRouter();
-  // placeholder data
-  const user = { name: "user" };
+  // Load user for greeting
+  const [username, setUsername] = useState<string>("user");
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/user', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort && data?.user?.username) setUsername(data.user.username);
+      } catch {}
+    })();
+    return () => { abort = true; };
+  }, []);
 
   // Real trips loaded from API
   const [trips, setTrips] = useState<Trip[]>([]);
@@ -78,7 +89,7 @@ export default function DashboardPage() {
         </div>
         {/* Content container below remains centered for readability */}
         <div className="max-w-5xl mx-auto px-6 pb-8 pt-2">
-          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Hey, {user.name} 👋</h1>
+          <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">Hey, {username} 👋</h1>
           <p className="mt-2 text-stone-300 text-lg">Plan, and pack smarter. PackPal.</p>
         </div>
       </header>

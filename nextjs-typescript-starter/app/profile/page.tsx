@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     let abort = false;
-    (async () => {
+    async function load() {
       try {
         const [uRes, fRes, tRes] = await Promise.all([
           fetch('/api/user', { cache: 'no-store' }),
@@ -32,12 +32,19 @@ export default function ProfilePage() {
       } catch {
         if (!abort) setError('Failed to load profile');
       }
-    })();
-    return () => { abort = true; };
+    }
+    load();
+    const onUserUpdated = () => void load();
+    if (typeof window !== 'undefined') window.addEventListener('user:updated', onUserUpdated as EventListener);
+    return () => { 
+      abort = true; 
+      if (typeof window !== 'undefined') window.removeEventListener('user:updated', onUserUpdated as EventListener);
+    };
   }, []);
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [emailTouched, setEmailTouched] = useState(false);
   const [bio, setBio] = useState("");
 
   useEffect(() => {
@@ -45,6 +52,7 @@ export default function ProfilePage() {
       setUsername(user.username);
       setEmail(user.email);
       setBio(user.bio ?? "");
+      setEmailTouched(false);
     }
   }, [user]);
 
@@ -87,11 +95,34 @@ export default function ProfilePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs text-stone-400 mb-1">Display name</label>
-                <input value={username} onChange={e=>setUsername(e.target.value)} className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700" />
+                <input
+                  value={username}
+                  onChange={e => {
+                    const val = e.target.value;
+                    setUsername(val);
+                    if (!emailTouched) {
+                      const local = val.trim().toLowerCase().replace(/[^a-z0-9]+/g, '') || 'user';
+                      setEmail(`${local}@gmail.com`);
+                    }
+                  }}
+                  className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700"
+                />
               </div>
               <div>
                 <label className="block text-xs text-stone-400 mb-1">Email</label>
-                <input value={email} onChange={e=>setEmail(e.target.value)} className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700" />
+                <input
+                  value={email}
+                  onChange={e => { setEmail(e.target.value); setEmailTouched(true); }}
+                  className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700"
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <div className="inline-flex items-center gap-2 text-sm mt-1">
+                  <span className={`px-2 py-0.5 rounded border ${user?.isPublic ? 'border-emerald-500 text-emerald-400' : 'border-stone-500 text-stone-300'}`}>
+                    {user?.isPublic ? 'Public' : 'Private'}
+                  </span>
+                  <span className="text-stone-500">Profile visibility</span>
+                </div>
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-xs text-stone-400 mb-1">Bio</label>

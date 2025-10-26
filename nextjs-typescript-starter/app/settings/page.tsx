@@ -88,7 +88,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <label className="block text-xs text-stone-400 mb-1">Email</label>
-              <input defaultValue={user?.email} onBlur={(e)=>void patch({ email: e.target.value })} className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700" />
+              <input defaultValue={user?.email} disabled readOnly className="w-full rounded px-3 py-2 bg-stone-800/60 border border-stone-700 text-stone-400 cursor-not-allowed" />
             </div>
           </div>
 

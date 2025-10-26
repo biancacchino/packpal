@@ -43,16 +43,12 @@ export default function ProfilePage() {
   }, []);
 
   const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [emailTouched, setEmailTouched] = useState(false);
   const [bio, setBio] = useState("");
 
   useEffect(() => {
     if (user) {
       setUsername(user.username);
-      setEmail(user.email);
       setBio(user.bio ?? "");
-      setEmailTouched(false);
     }
   }, [user]);
 
@@ -64,7 +60,7 @@ export default function ProfilePage() {
       const res = await fetch('/api/user', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, email, bio }),
+        body: JSON.stringify({ bio }),
       });
       if (!res.ok) throw new Error('Save failed');
       const d = await res.json();
@@ -92,29 +88,10 @@ export default function ProfilePage() {
             {user?.username ? user.username[0]?.toUpperCase() : 'U'}
           </div>
           <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-2">
               <div>
-                <label className="block text-xs text-stone-400 mb-1">Display name</label>
-                <input
-                  value={username}
-                  onChange={e => {
-                    const val = e.target.value;
-                    setUsername(val);
-                    if (!emailTouched) {
-                      const local = val.trim().toLowerCase().replace(/[^a-z0-9]+/g, '') || 'user';
-                      setEmail(`${local}@gmail.com`);
-                    }
-                  }}
-                  className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700"
-                />
-              </div>
-              <div>
-                <label className="block text-xs text-stone-400 mb-1">Email</label>
-                <input
-                  value={email}
-                  onChange={e => { setEmail(e.target.value); setEmailTouched(true); }}
-                  className="w-full rounded px-3 py-2 bg-stone-800 border border-stone-700"
-                />
+                <div className="text-xl font-semibold">{username}</div>
+                <div className="text-sm text-stone-500">Display name</div>
               </div>
               <div className="sm:col-span-2">
                 <div className="inline-flex items-center gap-2 text-sm mt-1">

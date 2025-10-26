@@ -159,3 +159,12 @@ export function deleteTrip(tripId: string): boolean {
   if (ok) void persistToDisk();
   return ok;
 }
+
+export function clearAllTrips(): void {
+  try {
+    store.trips.clear();
+    store.tokens.clear();
+  } finally {
+    void persistToDisk();
+  }
+}

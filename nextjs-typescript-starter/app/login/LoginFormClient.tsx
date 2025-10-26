@@ -1,13 +1,31 @@
 "use client";
 
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
+import Link from "next/link";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 export function LoginFormClient() {
+  const { status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  if (status === 'authenticated') {
+    return (
+      <div className="flex flex-col gap-3 bg-white px-4 py-6 sm:px-16">
+        <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3 text-emerald-900 text-sm">
+          You’re already signed in.
+        </div>
+        <div className="flex gap-3">
+          <Link href="/dashboard" className="inline-flex items-center rounded bg-black px-4 py-2 text-white hover:opacity-95">Go to dashboard</Link>
+          <button type="button" onClick={() => signOut({ callbackUrl: '/login' })} className="inline-flex items-center rounded border border-stone-300 px-4 py-2 hover:bg-stone-50">
+            Sign out
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

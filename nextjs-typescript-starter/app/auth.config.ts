@@ -16,8 +16,10 @@ export const authConfig = {
       // Keep this simple & side-effect free for middleware
       const { request, auth } = params as any;
       const isLoggedIn = !!auth?.user;
-      const isOnProtected = request?.nextUrl?.pathname?.startsWith('/protected');
-      if (isOnProtected) return isLoggedIn;
+      const path = request?.nextUrl?.pathname as string;
+      const isProtected = path?.startsWith('/dashboard') || path?.startsWith('/trips') || path?.startsWith('/protected');
+      const isSharePath = path?.startsWith('/trips/share/');
+      if (isProtected && !isSharePath) return isLoggedIn;
       return true;
     },
   },

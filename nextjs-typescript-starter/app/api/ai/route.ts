@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { addItems } from "app/trips/store";
 // Ensure Node.js runtime for stable fetch/HTTP behavior
 export const runtime = "nodejs";
 
@@ -85,7 +86,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     const prompt: string | undefined = body?.prompt;
     const messages: Array<{ role: string; content: string }> | undefined = body?.messages;
-    const tripContext: { destination?: string; start?: string; end?: string } | undefined = body?.tripContext;
+    const tripContext: { destination?: string; start?: string; end?: string; tripId?: string; autoAddItems?: boolean } | undefined = body?.tripContext;
     if ((!prompt || typeof prompt !== "string") && !Array.isArray(messages)) {
       return NextResponse.json({ error: "Missing prompt or messages[]" }, { status: 400 });
     }
@@ -177,7 +178,20 @@ export async function POST(req: Request) {
         const text = Array.isArray(parts)
           ? parts.map((p: any) => p?.text).filter(Boolean).join("\n\n")
           : res.payload?.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
-        return NextResponse.json({ text });
+        // Optionally auto-add bullet items to a trip if tripContext indicates
+        let added = 0;
+        const tripId = tripContext?.tripId;
+        const wantAutoAdd = !!tripContext?.autoAddItems;
+        if (tripId && wantAutoAdd) {
+          const items = extractBulletItems(text);
+          if (items.length > 0) {
+            try {
+              const created = addItems(tripId, items, "ai");
+              added = created.length;
+            } catch {}
+          }
+        }
+        return NextResponse.json({ text, added, tripId });
       }
 
       const status = res.status;
@@ -267,4 +281,28 @@ async function buildWeatherSummary(apiKey: string, destination: string, startISO
   } catch {
     return null;
   }
+}
+
+// Extract bullet list items from a plain-text response.
+// Looks for lines starting with '-' or '*', trims, and deduplicates.
+function extractBulletItems(text: string): string[] {
+  const lines = text.split(/\r?\n/);
+  const out: string[] = [];
+  const seen = new Set<string>();
+  for (let raw of lines) {
+    const m = raw.match(/^\s*[-*]\s+(.+)/);
+    if (!m) continue;
+    let item = m[1].trim();
+    // Strip leading/trailing quotes and trailing punctuation-only characters
+    item = item.replace(/^['"\-\u2013\u2014\u2015\u2012\u2011\s]+/, "").replace(/[\s.,;:!?)\]]+$/, "");
+    // Remove long em-dash notes if present, keeping the main item before the dash
+    const dashSplit = item.split(/\s[\u2013\u2014\-]\s/);
+    if (dashSplit[0]) item = dashSplit[0].trim();
+    const key = item.toLowerCase();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    out.push(item);
+  }
+  // Heuristic: avoid adding when the list is trivially small
+  return out.length >= 3 ? out : [];
 }

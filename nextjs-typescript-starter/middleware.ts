@@ -1,9 +1,19 @@
-import NextAuth from 'next-auth';
-import { authConfig } from './app/auth.config';
+import { auth } from 'app/auth';
+import { NextResponse } from 'next/server';
 
-export default NextAuth(authConfig).auth;
+// Use Auth.js v5 middleware to protect selected routes and handle auth-page redirects when logged in
+export default auth((req) => {
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth?.user;
+  const isAuthPage = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register');
+
+  if (isLoggedIn && isAuthPage) {
+    return NextResponse.redirect(new URL('/dashboard', nextUrl));
+  }
+  return NextResponse.next();
+});
 
 export const config = {
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  // Only run on relevant app pages to reduce overhead
+  matcher: ['/login', '/register', '/dashboard', '/trips/:path*', '/protected'],
 };

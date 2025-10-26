@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
-export function LoginFormClient() {
+export function RegisterFormClient() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,22 +17,41 @@ export function LoginFormClient() {
     setError(null);
 
     try {
-      const res = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      const res = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
       setLoading(false);
-      if (!res || (res as any).error) {
-        setError("Invalid email or password.");
+
+      if (res.ok) {
+        // Immediately sign in the new user, then go to dashboard
+        const login = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (!login || (login as any).error) {
+          router.push("/login?registered=1");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
-        router.push("/dashboard");
+        if (res.status === 409) {
+          // Account already exists – guide user to login quickly
+          setError("An account with this email already exists. Redirecting to sign in…");
+          setTimeout(() => router.push("/login?exists=1"), 600);
+          return;
+        }
+        const data = await res.json().catch(() => ({}));
+        setError(data?.error || "Registration failed");
       }
     } catch (err) {
       setLoading(false);
-      setError("An error occurred during sign in");
-      console.error("Sign in error:", err);
+      console.error("Registration error:", err);
+      setError("An unexpected error occurred");
     }
   }
 
@@ -73,7 +92,7 @@ export function LoginFormClient() {
       {error && <div className="text-sm text-red-600">{error}</div>}
 
       <button type="submit" className="w-full rounded bg-black px-4 py-2 text-white hover:opacity-95" disabled={loading}>
-        {loading ? "Signing in..." : "Sign in"}
+        {loading ? "Creating account..." : "Sign up"}
       </button>
     </form>
   );

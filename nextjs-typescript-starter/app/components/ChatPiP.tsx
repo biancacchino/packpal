@@ -14,6 +14,7 @@ export default function ChatPiP() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -23,6 +24,28 @@ export default function ChatPiP() {
       const raw = localStorage.getItem("packpal_chat");
       if (raw) setMessages(JSON.parse(raw) as Msg[]);
     } catch {}
+  }, []);
+
+  // When navigating between pages (e.g., from /ai to /trips/:id), re-sync with localStorage
+  useEffect(() => {
+    if (!mounted) return;
+    try {
+      const raw = localStorage.getItem("packpal_chat");
+      if (raw) setMessages(JSON.parse(raw) as Msg[]);
+    } catch {}
+  }, [pathname, mounted]);
+
+  // Best-effort sync if localStorage gets updated elsewhere
+  useEffect(() => {
+    function onStorage(e: StorageEvent) {
+      if (e.key !== "packpal_chat") return;
+      try {
+        const raw = e.newValue;
+        if (raw) setMessages(JSON.parse(raw) as Msg[]);
+      } catch {}
+    }
+    window.addEventListener('storage', onStorage);
+    return () => window.removeEventListener('storage', onStorage);
   }, []);
 
   useEffect(() => {
@@ -52,6 +75,16 @@ export default function ChatPiP() {
         const raw = localStorage.getItem("packpal_trip_draft");
         if (raw) tripContext = JSON.parse(raw);
       } catch {}
+      // If we're on a trip page, let the AI know the trip id and allow direct list updates
+      try {
+        const path = window.location.pathname;
+        const m = path.match(/^\/trips\/([^\/]+)$/);
+        if (m) {
+          const tripId = m[1];
+          // Hint the server to auto-add any generated bullet list items to this trip
+          tripContext = { ...(tripContext || {}), tripId, autoAddItems: true };
+        }
+      } catch {}
       const res = await fetch("/api/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -60,6 +93,15 @@ export default function ChatPiP() {
       const data = await res.json();
       const bot = (data?.text as string) || "";
       setMessages((m) => [...m, { role: "assistant", content: bot }]);
+      if (typeof data?.added === 'number') {
+        const skipped = typeof data?.skipped === 'number' ? data.skipped : 0;
+        if (data.added > 0) {
+          setNotice(`Added ${data.added} items to this trip.${skipped > 0 ? ` (${skipped} duplicates skipped)` : ''}`);
+        } else {
+          setNotice('No new items to add (duplicates skipped).');
+        }
+        setTimeout(() => setNotice(null), 2500);
+      }
     } catch {}
     setLoading(false);
   }
@@ -111,6 +153,9 @@ export default function ChatPiP() {
           </button>
         </div>
       </div>
+      {notice && (
+        <div className="px-3 pt-2 text-xs text-emerald-300">{notice}</div>
+      )}
       <div className="max-h-[50vh] overflow-y-auto p-3 space-y-2">
         {messages.slice(-12).map((m, i) => (
           <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>

@@ -1,0 +1,294 @@
+{
+  "trips": [
+    {
+      "id": "4db348cd-6d68-47e4-b53e-6aeffdcaad50",
+      "name": "Strip club",
+      "shareToken": "6f5d0afe-2812-4165-abe6-3562c1da3232",
+      "items": []
+    },
+    {
+      "id": "8a25d1a8-98b0-47c5-8fd0-c1781374420b",
+      "name": "Beach Trip",
+      "shareToken": "f28af9ea-8cbe-41a3-8370-b274e9ea5c6b",
+      "items": [
+        {
+          "id": "9415606a-ea27-4f11-94e2-d3aee84c4880",
+          "text": "Beach towel",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "85691779-5090-4887-ad4e-1671665c3923",
+          "text": "Sunscreen",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "09c2db64-18e3-4264-afab-b69e9371c9e3",
+          "text": "Sunglasses",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "d8707539-15a9-4a7b-b0ae-8e78d0394dde",
+          "text": "Hat",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "d405606a-e38d-45b2-9eb6-df520b98b5b0",
+          "text": "Water bottle",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "c0aab6c5-ef7d-49bf-b73a-7e2ffde41374",
+          "text": "Insect repellent",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "072d237d-9e93-41a9-806c-9a31e87127d5",
+          "text": "Small backpack",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "1c6dfb75-ec42-41d2-a222-31cf406cca21",
+          "text": "Swimsuit (2",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ab6ed439-edb7-4427-8592-e1d471f48a69",
+          "text": "T-shirts (3",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "25ee4087-1a69-4e4a-ac85-037d0e8ae617",
+          "text": "Shorts (2",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "2ed67a2e-383b-486d-bc67-571a2e483ce4",
+          "text": "Flip-flops or sandals",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "dfe0bafb-1699-4c06-bf84-c57cbba50dc9",
+          "text": "Change of clothes for sleeping",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a7b5d89d-fa89-400f-8baf-3c7cf46bad78",
+          "text": "Light cover-up",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ce91d1b9-c89b-48d0-955a-e7b83fbfbb85",
+          "text": "Toothbrush",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a43b340f-3eb0-4687-8de0-b549c4eafd68",
+          "text": "Toothpaste",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "1c79b693-ba7f-4774-9c64-7c733ddcb863",
+          "text": "Shampoo",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a5f8972b-fd2e-45de-8351-ad3a2bf7ef3e",
+          "text": "Soap",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "7d4ce715-6ff2-4d15-803b-fdedb3dc9601",
+          "text": "Deodorant",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "6cad6e01-8e6e-4864-9df0-acaa3354e7ce",
+          "text": "Phone",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "e4b76600-0bcf-4b79-9957-51d29543d2c7",
+          "text": "Portable charger",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "1e939c8e-8e1a-46e6-a513-5e327c01a193",
+          "text": "ID",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "d14f9b35-554b-450b-994e-41fad46c1f74",
+          "text": "Pain relievers",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "5971fe8b-e59d-4b9f-8a33-d0d4d83f28df",
+          "text": "Any personal medications",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "73b53541-ba40-42fa-a40f-912c4ef6bec8",
+          "text": "Book or magazine",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "58481e58-a1d0-4d3a-818f-561d6cb2285c",
+          "text": "Beach games",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "704ecb9d-9fea-4c99-baae-8e238229de27",
+          "text": "Small pillow",
+          "done": false,
+          "addedBy": "ai"
+        }
+      ]
+    },
+    {
+      "id": "22f37090-1464-4728-9635-ced9b92fde4b",
+      "name": "wedding",
+      "items": [
+        {
+          "id": "e0d2b5a9-85d4-4eeb-ad99-722a2663539f",
+          "text": "Wallet",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "8a80af75-2949-4120-9d84-e2bbbc785425",
+          "text": "Keys",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "faceaacb-8064-4a77-ba1c-ee62d9a3b5ad",
+          "text": "Medications",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "1436f851-b856-46c2-89d3-128b9a7dcf8d",
+          "text": "suit",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "cdff0da8-450d-4d77-9c0f-1436ecb5a29a",
+          "text": "Underwear",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ca6a2df1-2020-4e5a-9cc8-5a28e0f8f479",
+          "text": "Socks",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ae87bf35-e9f2-4554-a87e-0aa3a73ee949",
+          "text": "Pajamas",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a27562d4-3f1f-49b8-8218-8d09d23cb158",
+          "text": "Toothbrush",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "c5405cf4-73cd-4b68-aa85-cc46259ebce9",
+          "text": "Toothpaste",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "d8d1cd53-04b5-43ee-9811-69c30a22b3d2",
+          "text": "Shampoo",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "941c450c-7067-4b62-b522-b9ba83e56c02",
+          "text": "Soap",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "02725c9d-c671-46b9-b5f2-77759e5e8b6f",
+          "text": "Deodorant",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a0ee0715-db38-404b-ac5e-3c702b77bee7",
+          "text": "Portable charger",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "b97aadb0-2bdd-4a03-ada7-ac89791a8ef2",
+          "text": "ID",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "47fdccf9-1137-4d65-8a8c-e129cfef0e60",
+          "text": "Pain relievers",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "e98fccbd-4a0d-4193-af0d-e7f1bfffe1e3",
+          "text": "Stain remover pen",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "7672943c-cef0-4e35-805b-3a256ddffe9f",
+          "text": "Poop",
+          "done": true,
+          "addedBy": "me"
+        },
+        {
+          "id": "90eb8502-bd5e-48ad-bb4c-9e9b9009b481",
+          "text": "fart",
+          "done": true,
+          "addedBy": "me"
+        },
+        {
+          "id": "25b3235f-06a0-4dd3-93b8-c9840b2f2131",
+          "text": "start",
+          "done": true,
+          "addedBy": "me"
+        }
+      ],
+      "shareToken": "63cf1fe2-dd47-4730-a930-1e8f667e338b"
+    }
+  ]
+}

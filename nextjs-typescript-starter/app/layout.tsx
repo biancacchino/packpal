@@ -1,6 +1,7 @@
 import './globals.css';
 
 import { GeistSans } from 'geist/font/sans';
+import ChatPiP from './components/ChatPiP';
 
 let title = 'Packpal';
 let description =
@@ -24,7 +25,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={GeistSans.variable}>{children}</body>
+      <body className={GeistSans.variable}>
+        {children}
+        {/* Global picture-in-picture chat overlay */}
+        <ChatPiP />
+      </body>
     </html>
   );
 }

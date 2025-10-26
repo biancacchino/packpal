@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import TripCarousel, { type TripItem } from "app/components/TripCarousel";
+import TripCarousel, { type Trip } from "app/components/TripCarousel";
 import TripGrid from "app/components/TripGrid";
 import TripList from "app/components/TripList";
 import FriendsPanel from "app/components/FriendsPanel";
 import ListsPanel from "app/components/ListsPanel";
+import SideNavShell from "app/components/SideNavShell";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -15,12 +16,12 @@ export default function DashboardPage() {
   // placeholder data
   const user = { name: "user" };
 
-  // sample trips for the dashboard section
-  const trips: TripItem[] = useMemo(
+  // sample trips for the dashboard section (using Trip shape { id, name })
+  const trips: Trip[] = useMemo(
     () => [
-      { id: "1", title: "Cancún Trip 🌴", dates: "Mar 1–7" },
-      { id: "2", title: "NYC Weekend 🗽", dates: "Apr 10–12" },
-      { id: "3", title: "Banff Ski Trip ⛷️", dates: "Feb 15–20" },
+      { id: "1", name: "Cancún Trip 🌴" },
+      { id: "2", name: "NYC Weekend 🗽" },
+      { id: "3", name: "Banff Ski Trip ⛷️" },
     ],
     []
   );
@@ -41,7 +42,7 @@ export default function DashboardPage() {
   }, [view]);
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
+    <SideNavShell>
       <header className="border-b border-stone-800">
         {/* Full-width top bar so brand sits at true top-left of the viewport */}
         <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
@@ -120,7 +121,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {view === "carousel" && <TripCarousel trips={trips} />} 
+            {view === "carousel" && <TripCarousel items={trips} />} 
             {view === "grid" && <TripGrid trips={trips} />}
             {view === "list" && <TripList trips={trips} />}
           </div>
@@ -144,6 +145,6 @@ export default function DashboardPage() {
           </div>
         </section>
       </main>
-    </div>
+    </SideNavShell>
   );
 }

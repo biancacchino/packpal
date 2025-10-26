@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createUser, getUser } from "../../db";
+import { createUser, getUser } from "app/db";
 
 export async function POST(req: Request) {
   try {
@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     }
 
     const existing = await getUser(email);
-    if (existing) {
+    if (Array.isArray(existing) ? existing.length > 0 : !!existing) {
       return NextResponse.json({ error: "User already exists" }, { status: 409 });
     }
 

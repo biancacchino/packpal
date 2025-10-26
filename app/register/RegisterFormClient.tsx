@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 
 export function RegisterFormClient() {
   const router = useRouter();
@@ -25,9 +26,24 @@ export function RegisterFormClient() {
       setLoading(false);
 
       if (res.ok) {
-        // Navigate to dashboard after successful registration
-        window.location.href = "/dashboard";
+        // Immediately sign in the user, then go to dashboard
+        const login = await signIn("credentials", {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (!login || (login as any).error) {
+          router.push("/login?registered=1");
+        } else {
+          router.push("/dashboard");
+        }
       } else {
+        if (res.status === 409) {
+          setError("An account with this email already exists. Redirecting to sign in…");
+          setTimeout(() => router.push("/login?exists=1"), 600);
+          return;
+        }
         const data = await res.json().catch(() => ({}));
         setError(data?.error || "Registration failed");
       }

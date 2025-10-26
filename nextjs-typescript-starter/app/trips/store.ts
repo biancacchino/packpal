@@ -81,6 +81,23 @@ export function addItems(tripId: string, texts: string[], addedBy?: string): Tri
   const t = getTrip(tripId);
   if (!t) throw new Error('Trip not found');
   const created: TripItem[] = [];
+  const balanceBrackets = (s: string) => {
+    const pairs: Record<string, string> = { '(': ')', '[': ']', '{': '}' };
+    const openers = Object.keys(pairs);
+    const closers = Object.values(pairs);
+    let prefix = '';
+    let suffix = '';
+    for (const [open, close] of Object.entries(pairs)) {
+      const openCount = (s.match(new RegExp(`\\${open}`, 'g')) || []).length;
+      const closeCount = (s.match(new RegExp(`\\${close}`, 'g')) || []).length;
+      if (openCount > closeCount) {
+        suffix += close.repeat(openCount - closeCount);
+      } else if (closeCount > openCount) {
+        prefix = open.repeat(closeCount - openCount) + prefix;
+      }
+    }
+    return prefix + s + suffix;
+  };
   const normalize = (s: string) =>
     s
       .trim()
@@ -91,7 +108,7 @@ export function addItems(tripId: string, texts: string[], addedBy?: string): Tri
   const seen = new Set<string>(t.items.map((i) => normalize(i.text)));
 
   for (const text of texts) {
-    const clean = text.trim();
+    const clean = balanceBrackets(text.trim());
     if (!clean) continue;
     const key = normalize(clean);
     if (!key || seen.has(key)) continue; // skip duplicates (case/spacing/punctuation-insensitive)
@@ -137,7 +154,22 @@ export function updateItemText(tripId: string, itemId: string, text: string): Tr
   if (!t) return null;
   const it = t.items.find(i => i.id === itemId);
   if (!it) return null;
-  const clean = text.trim();
+  const balanceBrackets = (s: string) => {
+    const pairs: Record<string, string> = { '(': ')', '[': ']', '{': '}' };
+    let prefix = '';
+    let suffix = '';
+    for (const [open, close] of Object.entries(pairs)) {
+      const openCount = (s.match(new RegExp(`\\${open}`, 'g')) || []).length;
+      const closeCount = (s.match(new RegExp(`\\${close}`, 'g')) || []).length;
+      if (openCount > closeCount) {
+        suffix += close.repeat(openCount - closeCount);
+      } else if (closeCount > openCount) {
+        prefix = open.repeat(closeCount - openCount) + prefix;
+      }
+    }
+    return prefix + s + suffix;
+  };
+  const clean = balanceBrackets(text.trim());
   if (!clean) return it; // ignore empty
   it.text = clean;
   void persistToDisk();

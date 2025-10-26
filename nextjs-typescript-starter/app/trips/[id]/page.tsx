@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import SideNavShell from '../../components/SideNavShell';
 
 type TripItem = { id: string; text: string; done: boolean; addedBy?: string };
 
@@ -22,10 +23,11 @@ export default function TripPage() {
   const [nameInput, setNameInput] = useState('');
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [itemInput, setItemInput] = useState('');
+  const [copiedMsg, setCopiedMsg] = useState<string | null>(null);
   
 
-  async function load() {
-    setLoading(true);
+  async function load(showSpinner: boolean = true) {
+    if (showSpinner) setLoading(true);
     try {
       const res = await fetch(`/api/trips/${tripId}`);
       if (!res.ok) {
@@ -40,7 +42,7 @@ export default function TripPage() {
       setError('Failed to load trip. Please try again.');
       setTrip(null);
     } finally {
-      setLoading(false);
+      if (showSpinner) setLoading(false);
     }
   }
 
@@ -73,7 +75,7 @@ export default function TripPage() {
       const added = typeof data?.added === 'number' ? data.added : (Array.isArray(data?.created) ? data.created.length : 0);
       const skipped = typeof data?.skipped === 'number' ? data.skipped : 0;
       setText('');
-      await load();
+      await load(false);
       if (added > 0) {
         setAddNotice(`Saved ${added} item${added > 1 ? 's' : ''} to your list${skipped > 0 ? ` (${skipped} duplicates skipped)` : ''}.`);
         setTimeout(() => setAddNotice(null), 2200);
@@ -91,12 +93,12 @@ export default function TripPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ done: !done }),
     });
-    if (res.ok) await load();
+    if (res.ok) await load(false);
   }
 
   async function remove(itemId: string) {
     const res = await fetch(`/api/trips/${tripId}/items/${itemId}`, { method: 'DELETE' });
-    if (res.ok) await load();
+    if (res.ok) await load(false);
   }
 
   async function deleteTripAll() {
@@ -109,27 +111,33 @@ export default function TripPage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen bg-stone-900 text-stone-100 p-6">Loading…</div>;
+    return (
+      <SideNavShell>
+        <div className="min-h-screen text-stone-100 p-6">Loading…</div>
+      </SideNavShell>
+    );
   }
   if (!trip) {
     return (
-      <div className="min-h-screen bg-stone-900 text-stone-100 p-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-3 text-red-300">{error ?? 'Trip not found.'}</div>
-          <button
-            onClick={() => void load()}
-            className="rounded bg-emerald-500 text-black font-semibold px-4 py-2"
-          >
-            Retry
-          </button>
+      <SideNavShell>
+        <div className="min-h-screen text-stone-100 p-6">
+          <div className="max-w-3xl mx-auto">
+            <div className="mb-3 text-red-300">{error ?? 'Trip not found.'}</div>
+            <button
+              onClick={() => void load()}
+              className="rounded bg-emerald-500 text-black font-semibold px-4 py-2"
+            >
+              Retry
+            </button>
+          </div>
         </div>
-      </div>
+      </SideNavShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
-      <div className="max-w-3xl mx-auto px-4 py-8">
+    <SideNavShell>
+      <div className="max-w-3xl mx-auto px-4 py-8 text-stone-100">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4 flex-wrap">
             {editingName ? (
@@ -146,7 +154,7 @@ export default function TripPage() {
                   if (res.ok) {
                     setEditingName(false);
                     setNameInput('');
-                    await load();
+                    await load(false);
                   }
                 }}
                 className="flex items-center gap-2"
@@ -180,7 +188,15 @@ export default function TripPage() {
               className="w-[260px] rounded px-3 py-2 bg-stone-800 border border-stone-700 text-sm"
             />
             <button
-              onClick={() => { navigator.clipboard.writeText(shareUrl); }}
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(shareUrl);
+                  setCopiedMsg('Link copied');
+                  setTimeout(() => setCopiedMsg(null), 2000);
+                } catch {
+                  setError('Failed to copy link');
+                }
+              }}
               className="rounded bg-emerald-500 text-black font-semibold px-3 py-2"
             >
               Copy link
@@ -218,7 +234,13 @@ export default function TripPage() {
           {trip.items.map((i) => (
             <li key={i.id} className="flex items-center justify-between rounded border border-stone-700 px-3 py-2">
               <div className="flex items-center gap-3 flex-1">
-                <input type="checkbox" checked={i.done} onChange={() => void toggle(i.id, i.done)} />
+                <input
+                  type="checkbox"
+                  checked={i.done}
+                  onChange={() => void toggle(i.id, i.done)}
+                  aria-label={`Mark ${i.text} ${i.done ? 'not done' : 'done'}`}
+                  className="h-6 w-6 md:h-5 md:w-5 rounded-sm border border-stone-600 bg-stone-800 text-emerald-500 accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shrink-0"
+                />
                 {editingItemId === i.id ? (
                   <input
                     autoFocus
@@ -236,7 +258,7 @@ export default function TripPage() {
                           if (res.ok) {
                             setEditingItemId(null);
                             setItemInput('');
-                            await load();
+                            await load(false);
                           }
                         }
                       }
@@ -275,20 +297,28 @@ export default function TripPage() {
           {trip.items.length === 0 && <div className="text-stone-400">No items yet.</div>}
         </ul>
       </div>
-        {/* Toast error */}
-        {error && (
-          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
-            <div className="rounded-md bg-red-600 text-white px-4 py-2 shadow-lg">
-              {error}
-              <button
-                onClick={() => setError(null)}
-                className="ml-3 text-white/90 underline underline-offset-2"
-              >
-                Dismiss
-              </button>
-            </div>
+      {/* Toast success */}
+      {copiedMsg && (
+        <div className="fixed bottom-16 left-1/2 -translate-x-1/2 z-50">
+          <div className="rounded-md bg-emerald-600 text-black px-4 py-2 font-semibold shadow-lg">
+            {copiedMsg}
           </div>
-        )}
-    </div>
+        </div>
+      )}
+      {/* Toast error */}
+      {error && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+          <div className="rounded-md bg-red-600 text-white px-4 py-2 shadow-lg">
+            {error}
+            <button
+              onClick={() => setError(null)}
+              className="ml-3 text-white/90 underline underline-offset-2"
+            >
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+    </SideNavShell>
   );
 }

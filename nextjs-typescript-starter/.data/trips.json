@@ -3,8 +3,225 @@
     {
       "id": "b500672a-5e5a-4d59-8bc4-4e564bd05836",
       "name": "nnmnmnm",
-      "items": [],
-      "shareToken": "03ea398f-6940-4cd2-8596-069c9159859b"
+      "shareToken": "03ea398f-6940-4cd2-8596-069c9159859b",
+      "items": [
+        {
+          "id": "a0f855f7-b22b-402b-8c47-2c18112baa9e",
+          "text": "Phone charger",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "cc73a180-1eda-4e31-a836-d7ebbcb162b5",
+          "text": "Wallet",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "4e99a01c-1766-48b8-95d0-42c696b9cf52",
+          "text": "Keys",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ed7afff2-e0d2-460e-b656-70bb6e5da057",
+          "text": "Swimsuit (2",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "d2409bf9-669f-45fb-b740-d629b3b1d478",
+          "text": "Cover-up",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ad578f71-4af2-4d6c-849d-3b8584ce3d48",
+          "text": "Sandals",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "59271391-0a68-4cc7-9414-219fd6e180c3",
+          "text": "Flip-flops",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ff1e400d-71b3-4a5c-bc15-ff7897ae6fdc",
+          "text": "T-shirts (3",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "9330e7d3-83ae-4060-8b84-70fea9f9944f",
+          "text": "Shorts (2",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "3edb09f0-a0b0-4365-9964-709f92b20261",
+          "text": "Sundress/casual outfit",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "bf1b8f5e-f5e1-4301-8379-5018de1371fd",
+          "text": "Underwear",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a2d5ed47-6fa9-4d4b-a321-73773eff1407",
+          "text": "Socks",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "7e2cb39c-9200-444f-85f0-4e88f6972281",
+          "text": "Pajamas",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "5f58a92d-60bd-4775-996f-36741fc10e67",
+          "text": "Sunscreen",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "c0eb8029-c7fd-46e0-bf86-34fb8a432ca4",
+          "text": "After-sun lotion",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "f0baad5a-e2fa-4b58-977d-1a338549a862",
+          "text": "Shampoo",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "42ef40f0-37b4-438f-9db0-527e7afee5b3",
+          "text": "Conditioner",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "40702bda-a2d3-4ea5-9baa-a228783af5fc",
+          "text": "Body wash",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "a5d7aac6-9294-4c96-b1f5-79da4734a084",
+          "text": "Toothbrush",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "3dc3c8d9-954b-401f-a71f-3471977ae88e",
+          "text": "Toothpaste",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "aa6ab372-744b-4b4d-b377-4f96aec43f98",
+          "text": "Deodorant",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "b3def4eb-5abc-4ac0-990c-d3b23c5b5ede",
+          "text": "Makeup (optional",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "ace0185f-c168-40bd-a001-6373b7b9af6f",
+          "text": "Hairbrush",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "62f0844b-6a4f-48c6-b9e8-49af3c5f292a",
+          "text": "Insect repellent",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "b1ef3f2d-2c60-433b-b1aa-0577f46e50cf",
+          "text": "Phone",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "1cc4ae95-f5f7-4309-89ef-cf3ec3e378f8",
+          "text": "Headphones",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "b0dac71b-a8f5-4bc4-b2c3-32d2a5c45476",
+          "text": "Portable charger (optional",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "e0d6007b-6817-48ff-befb-f786778a3f4c",
+          "text": "ID",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "050312e7-5d14-49fa-a6f5-71e629f92b09",
+          "text": "Hotel confirmation",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "90fae6b0-0304-4b0f-9a09-47a808850391",
+          "text": "Pain relievers",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "24356c6d-ab7a-4d38-a16a-37895931eb5f",
+          "text": "Any personal prescriptions",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "6a1e8f20-d560-45a7-8337-8df51d297250",
+          "text": "Beach hat",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "24b37dcc-d294-457f-85fa-59f79d44828c",
+          "text": "Sunglasses",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "675b3b82-0033-4117-a2e0-b903c459b814",
+          "text": "Book",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "38d70176-53a4-40ca-94ea-957538739028",
+          "text": "Beach towel (check if hotel provides",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "43e025cc-94fd-45fb-9955-b8e8602b47e6",
+          "text": "Reusable water bottle",
+          "done": false,
+          "addedBy": "ai"
+        }
+      ]
     }
   ]
 }

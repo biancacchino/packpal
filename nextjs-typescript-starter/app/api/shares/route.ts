@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { addShare, listShares, type AccessLevel } from 'app/sharesStore';
+import { addShare, listShares, removeShare, type AccessLevel } from 'app/sharesStore';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -33,6 +33,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ share }, { status: 201 });
   } catch (e) {
     console.error('Failed to create share', e);
+    return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json().catch(() => ({}));
+    const friendId = (body.friendId as string) || undefined;
+    const tripId = (body.tripId as string) || undefined;
+    if (!friendId || !tripId) {
+      return NextResponse.json({ error: 'Missing friendId or tripId' }, { status: 400 });
+    }
+    const ok = removeShare(friendId, tripId);
+    return NextResponse.json({ removed: ok }, { status: ok ? 200 : 404 });
+  } catch (e) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 });
   }
 }

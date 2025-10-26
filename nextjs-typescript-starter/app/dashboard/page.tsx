@@ -6,7 +6,6 @@ import TripCarousel, { type Trip } from "app/components/TripCarousel";
 import TripGrid from "app/components/TripGrid";
 import TripList from "app/components/TripList";
 import FriendsPanel from "app/components/FriendsPanel";
-import ListsPanel from "app/components/ListsPanel";
 import SideNavShell from "app/components/SideNavShell";
 import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -61,8 +60,6 @@ export default function DashboardPage() {
         {/* Full-width top bar so brand sits at true top-left of the viewport */}
         <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <Link href="/" className="inline-flex items-center gap-3" aria-label="Packpal home">
-            <div className="h-8 w-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40" />
-            <span className="text-xl font-bold tracking-tight">PackPal</span>
           </Link>
           <div className="flex items-center gap-2">
             <Link
@@ -91,7 +88,7 @@ export default function DashboardPage() {
           <div className="flex items-end justify-between gap-4 flex-wrap">
             <div>
               <h2 className="text-2xl md:text-3xl font-bold">Trips</h2>
-              <p className="text-stone-400 text-base mt-1">Create and manage your upcoming adventures</p>
+              <p className="text-stone-400 text-base mt-1">Create and manage your upcoming adventures.</p>
             </div>
             <Link
               href="/trips/new"
@@ -156,17 +153,9 @@ export default function DashboardPage() {
         <section className="space-y-10">
           <div>
             <h3 className="text-2xl font-bold">Friends</h3>
-            <p className="text-stone-400 text-base mt-1">Invite friends and collaborate on packing lists</p>
+            <p className="text-stone-400 text-base mt-1">Invite friends and collaborate on packing lists.</p>
             <div className="mt-6">
               <FriendsPanel />
-            </div>
-          </div>
-
-          <div>
-            <h3 className="text-2xl font-bold">Your Lists</h3>
-            <p className="text-stone-400 text-base mt-1">Personal packing lists and templates</p>
-            <div className="mt-6">
-              <ListsPanel />
             </div>
           </div>
         </section>

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import type { Trip } from "app/components/TripCarousel";
 import type { Share } from "app/sharesStore";
 
 function NavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
@@ -29,11 +30,20 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
     { id: "f2", name: "Sam" },
     { id: "f3", name: "Riley" },
   ]), []);
-  const TRIPS = useMemo(() => ([
-    { id: "1", title: "Cancún Trip 🌴" },
-    { id: "2", title: "NYC Weekend 🗽" },
-    { id: "3", title: "Banff Ski Trip ⛷️" },
-  ]), []);
+  const [trips, setTrips] = useState<Trip[]>([]);
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/trips', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) setTrips(Array.isArray(data.trips) ? data.trips : []);
+      } catch {
+        if (!abort) setTrips([]);
+      }
+    })();
+    return () => { abort = true; };
+  }, []);
 
   const [shares, setShares] = useState<Share[]>([]);
   const [loading, setLoading] = useState(false);
@@ -56,16 +66,18 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
     return () => { abort = true; };
   }, []);
 
-  const tripTitle = (id: string) => TRIPS.find(t => t.id === id)?.title ?? `Trip ${id}`;
+  const tripTitle = (id: string) => trips.find(t => t.id === id)?.name ?? `Trip ${id}`;
   const friendsWithShares = useMemo(() => {
     const byFriend = new Map<string, { friendId: string; friendName: string; tripIds: string[] }>();
     for (const f of FRIENDS) byFriend.set(f.id, { friendId: f.id, friendName: f.name, tripIds: [] });
     for (const s of shares) {
       if (!byFriend.has(s.friendId)) continue;
-      byFriend.get(s.friendId)!.tripIds.push(s.tripId);
+      if (trips.some(t => t.id === s.tripId)) {
+        byFriend.get(s.friendId)!.tripIds.push(s.tripId);
+      }
     }
     return Array.from(byFriend.values()).filter(g => g.tripIds.length > 0);
-  }, [FRIENDS, shares]);
+  }, [FRIENDS, shares, trips]);
 
   return (
     <div>

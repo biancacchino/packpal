@@ -9,6 +9,7 @@ export type Trip = { id: string; name: string };
 export default function TripCarousel({ items }: { items?: Trip[] }) {
   const [index, setIndex] = useState(0);
   const [fetched, setFetched] = useState<Trip[]>([]);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (items && items.length > 0) return; // skip fetch when items are provided
@@ -57,6 +58,31 @@ export default function TripCarousel({ items }: { items?: Trip[] }) {
                   >
                     Open
                   </Link>
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`Delete \"${t.name}\"? This cannot be undone.`)) return;
+                      setDeletingId(t.id);
+                      try {
+                        const res = await fetch(`/api/trips/${t.id}`, { method: 'DELETE' });
+                        if (res.ok || res.status === 204) {
+                          // refresh fetched list when not using provided items
+                          if (!items) {
+                            const r = await fetch('/api/trips', { cache: 'no-store' });
+                            const data = await r.json();
+                            setFetched(Array.isArray(data.trips) ? data.trips : []);
+                            setIndex(0);
+                          }
+                        }
+                      } finally {
+                        setDeletingId(null);
+                      }
+                    }}
+                    disabled={deletingId === t.id}
+                    className="ml-3 inline-flex items-center px-4 py-2 rounded-md border border-red-500 text-red-400 hover:bg-red-500/10 disabled:opacity-50"
+                    aria-label={`Delete ${t.name}`}
+                  >
+                    {deletingId === t.id ? 'Deleting…' : 'Delete'}
+                  </button>
                 </div>
               </article>
             ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 
 type TripItem = { id: string; text: string; done: boolean; addedBy?: string };
 
@@ -9,8 +9,11 @@ type Trip = { id: string; name: string; items: TripItem[]; shareToken: string };
 
 export default function TripPage() {
   const params = useParams<{ id: string }>();
+  const router = useRouter();
   const tripId = useMemo(() => String(params?.id || ''), [params]);
   const [trip, setTrip] = useState<Trip | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [text, setText] = useState('');
   const [shareUrl, setShareUrl] = useState<string>('');
   const [dupNotice, setDupNotice] = useState<string | null>(null);
@@ -22,16 +25,33 @@ export default function TripPage() {
   
 
   async function load() {
-    const res = await fetch(`/api/trips/${tripId}`);
-    if (!res.ok) return;
-    const data = await res.json();
-    setTrip(data.trip);
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/trips/${tripId}`);
+      if (!res.ok) {
+        setError('Failed to load trip. Please try again.');
+        setTrip(null);
+        return;
+      }
+      const data = await res.json();
+      setTrip(data.trip);
+      setError(null);
+    } catch {
+      setError('Failed to load trip. Please try again.');
+      setTrip(null);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function loadShare() {
-    const res = await fetch(`/api/trips/${tripId}/share`);
-    const data = await res.json();
-    if (res.ok) setShareUrl(data.url);
+    try {
+      const res = await fetch(`/api/trips/${tripId}/share`);
+      const data = await res.json();
+      if (res.ok) setShareUrl(data.url);
+    } catch {
+      // silent share load error; primary toast comes from trip load
+    }
   }
 
   useEffect(() => {
@@ -79,8 +99,32 @@ export default function TripPage() {
     if (res.ok) await load();
   }
 
-  if (!trip) {
+  async function deleteTripAll() {
+    if (!trip) return;
+    if (!confirm(`Delete "${trip.name}"? This cannot be undone.`)) return;
+    const res = await fetch(`/api/trips/${tripId}`, { method: 'DELETE' });
+    if (res.ok || res.status === 204) {
+      router.push('/trips');
+    }
+  }
+
+  if (loading) {
     return <div className="min-h-screen bg-stone-900 text-stone-100 p-6">Loading…</div>;
+  }
+  if (!trip) {
+    return (
+      <div className="min-h-screen bg-stone-900 text-stone-100 p-6">
+        <div className="max-w-3xl mx-auto">
+          <div className="mb-3 text-red-300">{error ?? 'Trip not found.'}</div>
+          <button
+            onClick={() => void load()}
+            className="rounded bg-emerald-500 text-black font-semibold px-4 py-2"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -140,6 +184,12 @@ export default function TripPage() {
               className="rounded bg-emerald-500 text-black font-semibold px-3 py-2"
             >
               Copy link
+            </button>
+            <button
+              onClick={() => void deleteTripAll()}
+              className="rounded border border-red-500 text-red-400 font-semibold px-3 py-2 hover:bg-red-500/10"
+            >
+              Delete trip
             </button>
           </div>
         </div>
@@ -225,6 +275,20 @@ export default function TripPage() {
           {trip.items.length === 0 && <div className="text-stone-400">No items yet.</div>}
         </ul>
       </div>
+        {/* Toast error */}
+        {error && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">
+            <div className="rounded-md bg-red-600 text-white px-4 py-2 shadow-lg">
+              {error}
+              <button
+                onClick={() => setError(null)}
+                className="ml-3 text-white/90 underline underline-offset-2"
+              >
+                Dismiss
+              </button>
+            </div>
+          </div>
+        )}
     </div>
   );
 }

@@ -24,3 +24,7 @@ export function addFriend(name: string): Friend {
   friends.push(f);
   return f;
 }
+
+export function clearFriends() {
+  friends = [];
+}

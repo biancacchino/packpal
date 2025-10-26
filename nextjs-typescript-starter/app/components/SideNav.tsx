@@ -83,7 +83,7 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
     <div>
       {/* Desktop sidebar */}
       <aside className="hidden md:fixed md:inset-y-0 md:flex md:w-56 md:flex-col md:bg-stone-900/80 md:backdrop-blur md:py-3 md:border-r md:border-stone-800/70">
-        <div className="px-3 text-sm font-semibold tracking-tight text-stone-200">PackPal</div>
+        <div className="px-3 text-xl font-semibold tracking-tight text-stone-200">PackPal</div>
         <nav className="mt-4 px-2 space-y-0.5">
           <NavLink href="/dashboard">Dashboard</NavLink>
           <NavLink href="/trips">Trips</NavLink>

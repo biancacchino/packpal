@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NewTripPage() {
+  const router = useRouter();
   const [name, setName] = useState("");
   const [destination, setDestination] = useState("");
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     // Ensure PiP chat is visible when arriving here from the chat
@@ -33,6 +37,33 @@ export default function NewTripPage() {
       );
     } catch {}
   }, [name, destination, start, end]);
+
+  async function save() {
+    const n = name.trim();
+    if (!n || saving) return;
+    setSaving(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/trips", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: n }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setError(data?.error || "Failed to save trip");
+        setSaving(false);
+        return;
+      }
+      // Optionally clear draft after saving
+      try { localStorage.removeItem("packpal_trip_draft"); } catch {}
+      // Go to dashboard so it's visible in the list/carousel
+      router.push("/dashboard");
+    } catch (e) {
+      setError("Network error");
+      setSaving(false);
+    }
+  }
 
   return (
     <div className="min-h-screen bg-stone-900 text-stone-100">
@@ -62,9 +93,10 @@ export default function NewTripPage() {
             <textarea className="w-full bg-stone-800 rounded-lg px-3 py-2 outline-none" rows={4} placeholder="Anything special to remember" />
           </div>
           <div className="flex items-center gap-3">
-            <button type="button" className="px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400">Save</button>
+            <button type="button" onClick={save} disabled={!name.trim() || saving} className="px-4 py-2 rounded-lg bg-emerald-500 text-black font-semibold hover:bg-emerald-400 disabled:opacity-50">{saving ? "Saving…" : "Save"}</button>
             <a href="/trips" className="px-4 py-2 rounded-lg bg-stone-700 text-stone-100 hover:bg-stone-600">Cancel</a>
           </div>
+          {error && <div className="text-sm text-red-400">{error}</div>}
         </form>
       </div>
     </div>

@@ -1,24 +1,69 @@
 "use client";
 
 import Link from "next/link";
-import TripCarousel from "app/components/TripCarousel";
+import { useEffect, useMemo, useState } from "react";
+import TripCarousel, { type Trip } from "app/components/TripCarousel";
+import TripGrid from "app/components/TripGrid";
+import TripList from "app/components/TripList";
 import FriendsPanel from "app/components/FriendsPanel";
 import ListsPanel from "app/components/ListsPanel";
 import SideNavShell from "app/components/SideNavShell";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   // placeholder data
   const user = { name: "user" };
+
+  // sample trips for the dashboard section (using Trip shape { id, name })
+  const trips: Trip[] = useMemo(
+    () => [
+      { id: "1", name: "Cancún Trip 🌴" },
+      { id: "2", name: "NYC Weekend 🗽" },
+      { id: "3", name: "Banff Ski Trip ⛷️" },
+    ],
+    []
+  );
+
+  type ViewMode = "carousel" | "grid" | "list";
+  const [view, setView] = useState<ViewMode>(() => {
+    if (typeof window !== "undefined") {
+      const stored = window.localStorage.getItem("dashboardTripViewMode") as ViewMode | null;
+      if (stored === "carousel" || stored === "grid" || stored === "list") return stored;
+    }
+    return "carousel";
+  });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("dashboardTripViewMode", view);
+    }
+  }, [view]);
 
   return (
     <SideNavShell>
       <header className="border-b border-stone-800">
         {/* Full-width top bar so brand sits at true top-left of the viewport */}
-        <div className="px-4 sm:px-6 py-4">
+        <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <Link href="/" className="inline-flex items-center gap-3" aria-label="Packpal home">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40" />
             <span className="text-xl font-bold tracking-tight">PackPal</span>
           </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/ai"
+              className="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-700"
+            >
+              Open Chat
+            </Link>
+            <button
+              onClick={async () => { await signOut({ redirect: false }); router.push('/login'); }}
+              className="inline-flex items-center justify-center px-3 py-2 rounded-lg border border-stone-700 hover:bg-stone-800"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
         {/* Content container below remains centered for readability */}
         <div className="max-w-5xl mx-auto px-6 pb-8 pt-2">
@@ -42,8 +87,43 @@ export default function DashboardPage() {
               + New Trip
             </Link>
           </div>
-          <div className="mt-6">
-            <TripCarousel />
+          <div className="mt-6 space-y-4">
+            <div className="flex items-center gap-2">
+              <label className="text-sm text-stone-400 mr-1">View:</label>
+              <div className="inline-flex rounded-lg border border-stone-700 bg-stone-800 p-1">
+                <button
+                  onClick={() => setView("carousel")}
+                  className={`px-3 py-1.5 rounded-md text-sm ${
+                    view === "carousel" ? "bg-stone-700 text-white" : "text-stone-300 hover:text-white"
+                  }`}
+                  aria-pressed={view === "carousel"}
+                >
+                  Carousel
+                </button>
+                <button
+                  onClick={() => setView("grid")}
+                  className={`px-3 py-1.5 rounded-md text-sm ${
+                    view === "grid" ? "bg-stone-700 text-white" : "text-stone-300 hover:text-white"
+                  }`}
+                  aria-pressed={view === "grid"}
+                >
+                  Grid
+                </button>
+                <button
+                  onClick={() => setView("list")}
+                  className={`px-3 py-1.5 rounded-md text-sm ${
+                    view === "list" ? "bg-stone-700 text-white" : "text-stone-300 hover:text-white"
+                  }`}
+                  aria-pressed={view === "list"}
+                >
+                  List
+                </button>
+              </div>
+            </div>
+
+            {view === "carousel" && <TripCarousel items={trips} />} 
+            {view === "grid" && <TripGrid trips={trips} />}
+            {view === "list" && <TripList trips={trips} />}
           </div>
         </section>
 

@@ -16,15 +16,29 @@ export default function DashboardPage() {
   // placeholder data
   const user = { name: "user" };
 
-  // sample trips for the dashboard section (using Trip shape { id, name })
-  const trips: Trip[] = useMemo(
-    () => [
-      { id: "1", name: "Cancún Trip 🌴" },
-      { id: "2", name: "NYC Weekend 🗽" },
-      { id: "3", name: "Banff Ski Trip ⛷️" },
-    ],
-    []
-  );
+  // Real trips loaded from API
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [tripsLoading, setTripsLoading] = useState(true);
+  const [tripsError, setTripsError] = useState<string | null>(null);
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      setTripsLoading(true);
+      try {
+        const res = await fetch('/api/trips', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) {
+          setTrips(Array.isArray(data.trips) ? data.trips : []);
+          setTripsError(null);
+        }
+      } catch {
+        if (!abort) setTripsError('Failed to load trips.');
+      } finally {
+        if (!abort) setTripsLoading(false);
+      }
+    })();
+    return () => { abort = true; };
+  }, []);
 
   type ViewMode = "carousel" | "grid" | "list";
   const [view, setView] = useState<ViewMode>(() => {
@@ -122,8 +136,20 @@ export default function DashboardPage() {
             </div>
 
             {view === "carousel" && <TripCarousel items={trips} />} 
-            {view === "grid" && <TripGrid trips={trips} />}
-            {view === "list" && <TripList trips={trips} />}
+            {view === "grid" && (
+              tripsLoading && trips.length === 0 ? (
+                <div className="text-stone-300">Loading…</div>
+              ) : (
+                <TripGrid trips={trips} />
+              )
+            )}
+            {view === "list" && (
+              tripsLoading && trips.length === 0 ? (
+                <div className="text-stone-300">Loading…</div>
+              ) : (
+                <TripList trips={trips} />
+              )
+            )}
           </div>
         </section>
 

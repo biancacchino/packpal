@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import SideNavShell from "app/components/SideNavShell";
 import type { Share } from "app/sharesStore";
+import type { Trip } from "app/components/TripCarousel";
 
 export default function FriendsPage() {
   // Registry for demo: friend ids and names used across the app
@@ -15,16 +16,23 @@ export default function FriendsPage() {
     ]
   ), []);
 
-  // Registry for demo: trip titles by id
-  const TRIPS = useMemo(() => (
-    [
-      { id: "1", title: "Cancún Trip 🌴" },
-      { id: "2", title: "NYC Weekend 🗽" },
-      { id: "3", title: "Banff Ski Trip ⛷️" },
-    ]
-  ), []);
+  // Load real trips so links resolve correctly
+  const [trips, setTrips] = useState<Trip[]>([]);
+  useEffect(() => {
+    let abort = false;
+    (async () => {
+      try {
+        const res = await fetch('/api/trips', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) setTrips(Array.isArray(data.trips) ? data.trips : []);
+      } catch {
+        if (!abort) setTrips([]);
+      }
+    })();
+    return () => { abort = true; };
+  }, []);
 
-  const tripTitle = (id: string) => TRIPS.find(t => t.id === id)?.title ?? `Trip ${id}`;
+  const tripTitle = (id: string) => trips.find(t => t.id === id)?.name ?? `Trip ${id}`;
 
   const [shares, setShares] = useState<Share[]>([]);
   const [loading, setLoading] = useState(false);
@@ -59,8 +67,10 @@ export default function FriendsPage() {
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FRIENDS.map((f) => {
             const fShares = shares.filter(s => s.friendId === f.id);
-            // Deduplicate trip ids for safety
-            const uniqueTripIds = Array.from(new Set(fShares.map(s => s.tripId)));
+            // Deduplicate and keep only trip ids that exist
+            const uniqueTripIds = Array.from(new Set(
+              fShares.map(s => s.tripId).filter(tid => trips.some(t => t.id === tid))
+            ));
             return (
               <section key={f.id} className="rounded-lg border border-stone-800 bg-stone-900/60 p-4">
                 <h2 className="text-base font-semibold text-white">{f.name}</h2>

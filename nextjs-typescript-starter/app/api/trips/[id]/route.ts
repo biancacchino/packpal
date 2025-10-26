@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getTrip, renameTrip } from '@/app/trips/store';
+import { deleteTrip, getTrip, renameTrip } from '@/app/trips/store';
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -16,4 +16,11 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const t = renameTrip(id, name);
   if (!t) return NextResponse.json({ error: 'not found' }, { status: 404 });
   return NextResponse.json({ trip: t });
+}
+
+export async function DELETE(_: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const ok = deleteTrip(id);
+  if (!ok) return NextResponse.json({ error: 'not found' }, { status: 404 });
+  return new NextResponse(null, { status: 204 });
 }

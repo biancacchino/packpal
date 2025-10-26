@@ -143,3 +143,19 @@ export function updateItemText(tripId: string, itemId: string, text: string): Tr
   void persistToDisk();
   return it;
 }
+
+export function deleteTrip(tripId: string): boolean {
+  const t = getTrip(tripId);
+  if (!t) return false;
+  // remove token mapping
+  try {
+    if (t.shareToken) store.tokens.delete(t.shareToken);
+    // also cleanup any stale token->id entries pointing to this id
+    for (const [tok, id] of Array.from(store.tokens.entries())) {
+      if (id === tripId) store.tokens.delete(tok);
+    }
+  } catch {}
+  const ok = store.trips.delete(tripId);
+  if (ok) void persistToDisk();
+  return ok;
+}

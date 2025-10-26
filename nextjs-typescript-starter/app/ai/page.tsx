@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import SideNavShell from "app/components/SideNavShell";
 
 export default function AIPlaygroundPage() {
   const MAX_INPUT_CHARS = 2000;
@@ -87,7 +88,7 @@ export default function AIPlaygroundPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
+    <SideNavShell>
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 flex flex-col gap-4">
         <header className="pb-2 flex items-center justify-between gap-3">
           <div>
@@ -287,7 +288,7 @@ export default function AIPlaygroundPage() {
         </form>
         <div className="text-xs text-stone-400">{input.length} / {MAX_INPUT_CHARS} characters</div>
       </div>
-    </div>
+    </SideNavShell>
   );
 }
 

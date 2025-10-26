@@ -36,7 +36,18 @@ export default function DashboardPage() {
         if (!abort) setTripsLoading(false);
       }
     })();
-    return () => { abort = true; };
+    const onTripsUpdated = async () => {
+      if (abort) return;
+      try {
+        const res = await fetch('/api/trips', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) setTrips(Array.isArray(data.trips) ? data.trips : []);
+      } catch {
+        if (!abort) setTrips([]);
+      }
+    };
+    window.addEventListener('trips:updated', onTripsUpdated as EventListener);
+    return () => { abort = true; window.removeEventListener('trips:updated', onTripsUpdated as EventListener); };
   }, []);
 
   type ViewMode = "carousel" | "grid" | "list";

@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
+import type { Share } from "app/sharesStore";
 
 function NavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   const pathname = usePathname();
@@ -21,6 +23,50 @@ function NavLink({ href, children, onClick }: { href: string; children: React.Re
 }
 
 export default function SideNav({ open, onClose }: { open: boolean; onClose: () => void }) {
+  // Lightweight sample registries to resolve names for ids.
+  const FRIENDS = useMemo(() => ([
+    { id: "f1", name: "Alex" },
+    { id: "f2", name: "Sam" },
+    { id: "f3", name: "Riley" },
+  ]), []);
+  const TRIPS = useMemo(() => ([
+    { id: "1", title: "Cancún Trip 🌴" },
+    { id: "2", title: "NYC Weekend 🗽" },
+    { id: "3", title: "Banff Ski Trip ⛷️" },
+  ]), []);
+
+  const [shares, setShares] = useState<Share[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    let abort = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/shares', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!abort) setShares(Array.isArray(data.shares) ? data.shares : []);
+      } catch {}
+      finally {
+        if (!abort) setLoading(false);
+      }
+    }
+    load();
+    return () => { abort = true; };
+  }, []);
+
+  const tripTitle = (id: string) => TRIPS.find(t => t.id === id)?.title ?? `Trip ${id}`;
+  const friendsWithShares = useMemo(() => {
+    const byFriend = new Map<string, { friendId: string; friendName: string; tripIds: string[] }>();
+    for (const f of FRIENDS) byFriend.set(f.id, { friendId: f.id, friendName: f.name, tripIds: [] });
+    for (const s of shares) {
+      if (!byFriend.has(s.friendId)) continue;
+      byFriend.get(s.friendId)!.tripIds.push(s.tripId);
+    }
+    return Array.from(byFriend.values()).filter(g => g.tripIds.length > 0);
+  }, [FRIENDS, shares]);
+
   return (
     <div>
       {/* Desktop sidebar */}
@@ -30,6 +76,23 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
           <NavLink href="/dashboard">Dashboard</NavLink>
           <NavLink href="/trips">Trips</NavLink>
           <NavLink href="/friends">Friends</NavLink>
+          {/* Friends -> trips grouping */}
+          {friendsWithShares.length > 0 && (
+            <div className="mt-2 space-y-1">
+              {friendsWithShares.map((g) => (
+                <div key={g.friendId} className="px-1">
+                  <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-stone-400/80">{g.friendName}</div>
+                  <ul className="ml-2 border-l border-stone-800/70 pl-2 space-y-0.5">
+                    {g.tripIds.map((tid) => (
+                      <li key={tid}>
+                        <NavLink href={`/trips/${tid}`}>{tripTitle(tid)}</NavLink>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          )}
         </nav>
         <div className="mt-auto px-2 pt-3 border-t border-stone-800/70">
           <nav className="space-y-0.5">
@@ -55,6 +118,23 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
             <NavLink href="/dashboard" onClick={onClose}>Dashboard</NavLink>
             <NavLink href="/trips" onClick={onClose}>Trips</NavLink>
             <NavLink href="/friends" onClick={onClose}>Friends</NavLink>
+            {/* Friends -> trips grouping */}
+            {friendsWithShares.length > 0 && (
+              <div className="mt-2 space-y-1">
+                {friendsWithShares.map((g) => (
+                  <div key={g.friendId} className="px-1">
+                    <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-stone-400/80">{g.friendName}</div>
+                    <ul className="ml-2 border-l border-stone-800/70 pl-2 space-y-0.5">
+                      {g.tripIds.map((tid) => (
+                        <li key={tid}>
+                          <NavLink href={`/trips/${tid}`} onClick={onClose}>{tripTitle(tid)}</NavLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
           </nav>
           <div className="mt-auto pt-3 border-t border-stone-800/70 space-y-0.5">
             <NavLink href="/profile" onClick={onClose}>Profile</NavLink>

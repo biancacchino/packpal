@@ -1,5 +1,4 @@
 // Simple in-memory user profile/preferences for demo purposes.
-export type Theme = 'light' | 'dark';
 export type User = {
   id: string;
   username: string;
@@ -8,7 +7,6 @@ export type User = {
   avatarUrl?: string;
   isPublic: boolean;
   emailNotifications: boolean;
-  theme: Theme;
 };
 
 let user: User = {
@@ -19,7 +17,6 @@ let user: User = {
   avatarUrl: '',
   isPublic: true,
   emailNotifications: true,
-  theme: 'dark',
 };
 
 export function getUser(): User {

@@ -9,7 +9,7 @@ export async function GET() {
 export async function PATCH(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
-    const allowed = ['username','email','bio','avatarUrl','isPublic','emailNotifications','theme'] as const;
+  const allowed = ['username','email','bio','avatarUrl','isPublic','emailNotifications'] as const;
     const patch: any = {};
     for (const k of allowed) if (k in body) patch[k] = (body as any)[k];
     // If username is provided but email is not, set a default email based on the username

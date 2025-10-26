@@ -26,7 +26,7 @@ export function RegisterFormClient() {
       setLoading(false);
 
       if (res.ok) {
-        // Immediately sign in the user, then go to dashboard
+        // Immediately sign in the new user, then go to dashboard
         const login = await signIn("credentials", {
           email,
           password,
@@ -40,6 +40,7 @@ export function RegisterFormClient() {
         }
       } else {
         if (res.status === 409) {
+          // Account already exists – guide user to login quickly
           setError("An account with this email already exists. Redirecting to sign in…");
           setTimeout(() => router.push("/login?exists=1"), 600);
           return;
@@ -55,15 +56,9 @@ export function RegisterFormClient() {
   }
 
   return (
-    <form
-      onSubmit={onSubmit}
-      className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 sm:px-16"
-    >
+    <form onSubmit={onSubmit} className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 sm:px-16">
       <div>
-        <label
-          htmlFor="email"
-          className="block text-xs text-gray-600 uppercase"
-        >
+        <label htmlFor="email" className="block text-xs text-gray-600 uppercase">
           Email Address
         </label>
         <input
@@ -80,10 +75,7 @@ export function RegisterFormClient() {
       </div>
 
       <div>
-        <label
-          htmlFor="password"
-          className="block text-xs text-gray-600 uppercase"
-        >
+        <label htmlFor="password" className="block text-xs text-gray-600 uppercase">
           Password
         </label>
         <input
@@ -99,11 +91,7 @@ export function RegisterFormClient() {
 
       {error && <div className="text-sm text-red-600">{error}</div>}
 
-      <button
-        type="submit"
-        className="w-full rounded bg-black px-4 py-2 text-white hover:opacity-95"
-        disabled={loading}
-      >
+      <button type="submit" className="w-full rounded bg-black px-4 py-2 text-white hover:opacity-95" disabled={loading}>
         {loading ? "Creating account..." : "Sign up"}
       </button>
     </form>

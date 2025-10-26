@@ -1,32 +1,70 @@
-export default function TripsListPage() {
-  // Placeholder list of trips for now
-  const sampleTrips = [
-    { id: "sample-1", name: "Weekend in Santa Cruz", dates: "Oct 18–20" },
-    { id: "sample-2", name: "NYC Work Trip", dates: "Nov 4–8" },
-  ];
+"use client";
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+
+type Trip = { id: string; name: string };
+
+export default function TripsPage() {
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [name, setName] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function load() {
+    const res = await fetch('/api/trips');
+    const data = await res.json();
+    setTrips(data.trips || []);
+  }
+
+  useEffect(() => { void load(); }, []);
+
+  async function createTrip() {
+    const n = name.trim();
+    if (!n) return;
+    setLoading(true);
+    const res = await fetch('/api/trips', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: n }),
+    });
+    setLoading(false);
+    if (res.ok) {
+      setName("");
+      await load();
+    }
+  }
+
   return (
     <div className="min-h-screen bg-stone-900 text-stone-100">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <h1 className="text-2xl font-bold mb-4">Your Trips</h1>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {sampleTrips.map((t) => (
-            <a
-              key={t.id}
-              href={`/trips/${t.id}`}
-              className="block rounded-xl border border-stone-700 bg-stone-800 p-4 hover:bg-stone-700"
-            >
-              <div className="text-lg font-semibold">{t.name}</div>
-              <div className="text-stone-300">{t.dates}</div>
-            </a>
-          ))}
-          <a
-            href="/trips/new"
-            className="block rounded-xl border border-emerald-600 bg-emerald-500/10 p-4 hover:bg-emerald-500/20"
+        <h1 className="text-2xl font-bold mb-6">Your Trips</h1>
+        <div className="flex gap-2 mb-6">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="New trip name"
+            className="flex-1 rounded px-3 py-2 bg-stone-800 border border-stone-700 outline-none"
+          />
+          <button
+            onClick={createTrip}
+            disabled={!name.trim() || loading}
+            className="rounded bg-emerald-500 text-black font-semibold px-4 py-2 disabled:opacity-50"
           >
-            <div className="text-lg font-semibold text-emerald-400">+ Create a new trip</div>
-            <div className="text-stone-300">Start fresh with destination and dates</div>
-          </a>
+            Create
+          </button>
         </div>
+
+        <ul className="grid gap-4 sm:grid-cols-2">
+          {trips.map((t) => (
+            <li key={t.id} className="rounded-xl border border-stone-700 bg-stone-800 p-4">
+              <div className="text-lg font-semibold mb-2">{t.name}</div>
+              <Link href={`/trips/${t.id}`} className="text-emerald-400 hover:underline">Open</Link>
+            </li>
+          ))}
+          {trips.length === 0 && (
+            <div className="text-stone-300">No trips yet. Create one above.</div>
+          )}
+        </ul>
       </div>
     </div>
   );

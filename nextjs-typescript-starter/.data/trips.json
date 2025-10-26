@@ -1,3 +1,10 @@
 {
-  "trips": []
+  "trips": [
+    {
+      "id": "b500672a-5e5a-4d59-8bc4-4e564bd05836",
+      "name": "nnmnmnm",
+      "items": [],
+      "shareToken": "03ea398f-6940-4cd2-8596-069c9159859b"
+    }
+  ]
 }

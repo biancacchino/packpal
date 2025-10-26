@@ -290,11 +290,15 @@ function extractBulletItems(text: string): string[] {
   const out: string[] = [];
   const seen = new Set<string>();
   for (let raw of lines) {
-    const m = raw.match(/^\s*[-*]\s+(.+)/);
+    // Accept '-', '*', '•' bullets or numbered '1.' / '1)'
+    const m = raw.match(/^\s*(?:[-*•]\s+|\d+[.)]\s+)(.+)/);
     if (!m) continue;
     let item = m[1].trim();
+    // Skip section headers or conversational intros
+    if (/^[A-Za-z][A-Za-z\s]+:\s*$/.test(item)) continue;
+    if (/^(okay|sure|here(?:'|’)s)\b/i.test(item)) continue;
     // Strip leading/trailing quotes and trailing punctuation-only characters
-    item = item.replace(/^['"\-\u2013\u2014\u2015\u2012\u2011\s]+/, "").replace(/[\s.,;:!?)\]]+$/, "");
+    item = item.replace(/^["'\-\u2013\u2014\u2015\u2012\u2011\s]+/, "").replace(/[\s.,;:!?)\]]+$/, "");
     // Remove long em-dash notes if present, keeping the main item before the dash
     const dashSplit = item.split(/\s[\u2013\u2014\-]\s/);
     if (dashSplit[0]) item = dashSplit[0].trim();

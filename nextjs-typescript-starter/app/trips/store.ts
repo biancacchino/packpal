@@ -33,7 +33,9 @@ async function loadFromDisk() {
           id: t.id,
           name: t.name,
           shareToken: t.shareToken || randomUUID(),
-          items: Array.isArray(t.items) ? t.items.map(i => ({ id: i.id, text: i.text, done: !!i.done, addedBy: i.addedBy })) : [],
+          items: Array.isArray(t.items)
+            ? t.items.map(i => ({ id: i.id, text: balanceBrackets(i.text || ''), done: !!i.done, addedBy: i.addedBy }))
+            : [],
         };
         store.trips.set(trip.id, trip);
         store.tokens.set(trip.shareToken, trip.id);
@@ -52,6 +54,24 @@ async function persistToDisk() {
 
 // attempt initial load (best-effort)
 void loadFromDisk();
+
+function balanceBrackets(s: string): string {
+  // Append missing closers for (, [, { if they are unbalanced
+  const opens = { '(': 0, '[': 0, '{': 0 } as Record<string, number>;
+  const closes = { ')': '(', ']': '[', '}': '{' } as Record<string, string>;
+  for (const ch of s) {
+    if (ch in opens) opens[ch]!++;
+    else if (ch in closes) {
+      const o = closes[ch];
+      if (opens[o] > 0) opens[o]!--;
+    }
+  }
+  let out = s;
+  if (opens['('] > 0) out += ')'.repeat(opens['(']);
+  if (opens['['] > 0) out += ']'.repeat(opens['[']);
+  if (opens['{'] > 0) out += '}'.repeat(opens['{']);
+  return out;
+}
 
 export function listTrips(): Trip[] {
   return Array.from(store.trips.values());
@@ -91,7 +111,7 @@ export function addItems(tripId: string, texts: string[], addedBy?: string): Tri
   const seen = new Set<string>(t.items.map((i) => normalize(i.text)));
 
   for (const text of texts) {
-    const clean = text.trim();
+    const clean = balanceBrackets(text.trim());
     if (!clean) continue;
     const key = normalize(clean);
     if (!key || seen.has(key)) continue; // skip duplicates (case/spacing/punctuation-insensitive)
@@ -137,7 +157,7 @@ export function updateItemText(tripId: string, itemId: string, text: string): Tr
   if (!t) return null;
   const it = t.items.find(i => i.id === itemId);
   if (!it) return null;
-  const clean = text.trim();
+  const clean = balanceBrackets(text.trim());
   if (!clean) return it; // ignore empty
   it.text = clean;
   void persistToDisk();
@@ -158,13 +178,4 @@ export function deleteTrip(tripId: string): boolean {
   const ok = store.trips.delete(tripId);
   if (ok) void persistToDisk();
   return ok;
-}
-
-export function clearAllTrips(): void {
-  try {
-    store.trips.clear();
-    store.tokens.clear();
-  } finally {
-    void persistToDisk();
-  }
 }

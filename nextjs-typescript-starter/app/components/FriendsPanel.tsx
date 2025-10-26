@@ -1,17 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import InviteDialog from "./InviteDialog";
 import type { AccessLevel } from "app/sharesStore";
-
-const sampleFriends = [
-  { id: "f1", name: "Alex" },
-  { id: "f2", name: "Sam" },
-  { id: "f3", name: "Riley" },
-];
+import type { Friend } from "app/friendsStore";
 
 export default function FriendsPanel() {
-  const [friends] = useState(sampleFriends);
+  const [friends, setFriends] = useState<Friend[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Load friends from API so Dashboard reflects additions from Friends page
+  useEffect(() => {
+    let abort = false;
+    async function load() {
+      setLoading(true);
+      try {
+        const res = await fetch('/api/friends', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) {
+          setFriends(Array.isArray(data.friends) ? data.friends : []);
+          setError(null);
+        }
+      } catch {
+        if (!abort) setError('Failed to load friends');
+      } finally {
+        if (!abort) setLoading(false);
+      }
+    }
+    load();
+    // Listen for cross-page updates
+    const onUpdated = () => void load();
+    window.addEventListener('friends:updated', onUpdated as EventListener);
+    return () => {
+      abort = true;
+      window.removeEventListener('friends:updated', onUpdated as EventListener);
+    };
+  }, []);
   const [inviteOpen, setInviteOpen] = useState(false);
   const [selectedFriend, setSelectedFriend] = useState<{ id: string; name: string } | null>(null);
   const [lastInvite, setLastInvite] = useState<{
@@ -26,6 +51,14 @@ export default function FriendsPanel() {
 
   return (
     <div className="bg-stone-800 rounded-xl p-6">
+      {loading && (
+        <div className="mb-3 text-sm text-stone-400">Loading friends…</div>
+      )}
+      {error && (
+        <div className="mb-3 rounded-md border border-red-400/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+          {error}
+        </div>
+      )}
       {lastInvite && (
         <div className="mb-4 rounded-md border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
           Shared a trip with {lastInvite.friendName} ({lastInvite.access}).

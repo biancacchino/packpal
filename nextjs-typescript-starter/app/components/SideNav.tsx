@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import type { Trip } from "app/components/TripCarousel";
 import type { Share } from "app/sharesStore";
+import type { Friend } from "app/friendsStore";
 
 function NavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   const pathname = usePathname();
@@ -24,12 +25,27 @@ function NavLink({ href, children, onClick }: { href: string; children: React.Re
 }
 
 export default function SideNav({ open, onClose }: { open: boolean; onClose: () => void }) {
-  // Lightweight sample registries to resolve names for ids.
-  const FRIENDS = useMemo(() => ([
-    { id: "f1", name: "Alex" },
-    { id: "f2", name: "Sam" },
-    { id: "f3", name: "Riley" },
-  ]), []);
+  // Live friends list from API for labeling shares
+  const [friends, setFriends] = useState<Friend[]>([]);
+  useEffect(() => {
+    let abort = false;
+    async function load() {
+      try {
+        const res = await fetch('/api/friends', { cache: 'no-store' });
+        const data = await res.json();
+        if (!abort) setFriends(Array.isArray(data.friends) ? data.friends : []);
+      } catch {
+        if (!abort) setFriends([]);
+      }
+    }
+    load();
+    const onUpdated = () => void load();
+    window.addEventListener('friends:updated', onUpdated as EventListener);
+    return () => { 
+      abort = true; 
+      window.removeEventListener('friends:updated', onUpdated as EventListener);
+    };
+  }, []);
   const [trips, setTrips] = useState<Trip[]>([]);
   useEffect(() => {
     let abort = false;
@@ -69,7 +85,7 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
   const tripTitle = (id: string) => trips.find(t => t.id === id)?.name ?? `Trip ${id}`;
   const friendsWithShares = useMemo(() => {
     const byFriend = new Map<string, { friendId: string; friendName: string; tripIds: string[] }>();
-    for (const f of FRIENDS) byFriend.set(f.id, { friendId: f.id, friendName: f.name, tripIds: [] });
+    for (const f of friends) byFriend.set(f.id, { friendId: f.id, friendName: f.name, tripIds: [] });
     for (const s of shares) {
       if (!byFriend.has(s.friendId)) continue;
       if (trips.some(t => t.id === s.tripId)) {
@@ -77,7 +93,7 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
       }
     }
     return Array.from(byFriend.values()).filter(g => g.tripIds.length > 0);
-  }, [FRIENDS, shares, trips]);
+  }, [friends, shares, trips]);
 
   return (
     <div>

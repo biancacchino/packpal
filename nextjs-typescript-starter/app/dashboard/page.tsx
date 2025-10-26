@@ -7,8 +7,11 @@ import TripGrid from "app/components/TripGrid";
 import TripList from "app/components/TripList";
 import FriendsPanel from "app/components/FriendsPanel";
 import ListsPanel from "app/components/ListsPanel";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function DashboardPage() {
+  const router = useRouter();
   // placeholder data
   const user = { name: "user" };
 
@@ -41,11 +44,25 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-stone-900 text-stone-100">
       <header className="border-b border-stone-800">
         {/* Full-width top bar so brand sits at true top-left of the viewport */}
-        <div className="px-4 sm:px-6 py-4">
+        <div className="px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
           <Link href="/" className="inline-flex items-center gap-3" aria-label="Packpal home">
             <div className="h-8 w-8 rounded-lg bg-emerald-500/20 border border-emerald-500/40" />
             <span className="text-xl font-bold tracking-tight">PackPal</span>
           </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href="/ai"
+              className="inline-flex items-center justify-center px-3 py-2 rounded-lg bg-stone-800 hover:bg-stone-700 border border-stone-700"
+            >
+              Open Chat
+            </Link>
+            <button
+              onClick={async () => { await signOut({ redirect: false }); router.push('/login'); }}
+              className="inline-flex items-center justify-center px-3 py-2 rounded-lg border border-stone-700 hover:bg-stone-800"
+            >
+              Sign out
+            </button>
+          </div>
         </div>
         {/* Content container below remains centered for readability */}
         <div className="max-w-5xl mx-auto px-6 pb-8 pt-2">

@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export function LoginFormClient() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -18,13 +20,14 @@ export function LoginFormClient() {
       const res = await signIn("credentials", {
         email,
         password,
-        redirect: true,
-        callbackUrl: "/dashboard",
+        redirect: false,
       });
 
       setLoading(false);
       if (!res || (res as any).error) {
         setError("Invalid email or password.");
+      } else {
+        router.push("/dashboard");
       }
     } catch (err) {
       setLoading(false);

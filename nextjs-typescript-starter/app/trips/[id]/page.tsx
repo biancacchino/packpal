@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import SideNavShell from 'app/components/SideNavShell';
 
 type TripItem = { id: string; text: string; done: boolean; addedBy?: string };
 
@@ -24,8 +25,8 @@ export default function TripPage() {
   const [itemInput, setItemInput] = useState('');
   
 
-  async function load() {
-    setLoading(true);
+  async function load(showSpinner: boolean = true) {
+    if (showSpinner) setLoading(true);
     try {
       const res = await fetch(`/api/trips/${tripId}`);
       if (!res.ok) {
@@ -40,7 +41,7 @@ export default function TripPage() {
       setError('Failed to load trip. Please try again.');
       setTrip(null);
     } finally {
-      setLoading(false);
+      if (showSpinner) setLoading(false);
     }
   }
 
@@ -109,27 +110,33 @@ export default function TripPage() {
   }
 
   if (loading) {
-    return <div className="min-h-screen bg-stone-900 text-stone-100 p-6">Loading…</div>;
+    return (
+      <SideNavShell>
+        <div className="p-6 text-stone-100">Loading…</div>
+      </SideNavShell>
+    );
   }
   if (!trip) {
     return (
-      <div className="min-h-screen bg-stone-900 text-stone-100 p-6">
-        <div className="max-w-3xl mx-auto">
-          <div className="mb-3 text-red-300">{error ?? 'Trip not found.'}</div>
-          <button
-            onClick={() => void load()}
-            className="rounded bg-emerald-500 text-black font-semibold px-4 py-2"
-          >
-            Retry
-          </button>
+      <SideNavShell>
+        <div className="p-6 text-stone-100">
+          <div className="max-w-3xl mx-auto">
+            <div className="mb-3 text-red-300">{error ?? 'Trip not found.'}</div>
+            <button
+              onClick={() => void load(false)}
+              className="rounded bg-emerald-500 text-black font-semibold px-4 py-2"
+            >
+              Retry
+            </button>
+          </div>
         </div>
-      </div>
+      </SideNavShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
-      <div className="max-w-3xl mx-auto px-4 py-8">
+    <SideNavShell>
+      <div className="max-w-3xl mx-auto px-4 py-8 text-stone-100">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4 flex-wrap">
             {editingName ? (
@@ -146,7 +153,7 @@ export default function TripPage() {
                   if (res.ok) {
                     setEditingName(false);
                     setNameInput('');
-                    await load();
+                    await load(false);
                   }
                 }}
                 className="flex items-center gap-2"
@@ -218,7 +225,13 @@ export default function TripPage() {
           {trip.items.map((i) => (
             <li key={i.id} className="flex items-center justify-between rounded border border-stone-700 px-3 py-2">
               <div className="flex items-center gap-3 flex-1">
-                <input type="checkbox" checked={i.done} onChange={() => void toggle(i.id, i.done)} />
+                <input
+                  type="checkbox"
+                  checked={i.done}
+                  onChange={() => void toggle(i.id, i.done)}
+                  aria-label={`Mark ${i.text} ${i.done ? 'not done' : 'done'}`}
+                  className="h-6 w-6 md:h-5 md:w-5 rounded-sm border border-stone-600 bg-stone-800 text-emerald-500 accent-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 shrink-0"
+                />
                 {editingItemId === i.id ? (
                   <input
                     autoFocus
@@ -236,7 +249,7 @@ export default function TripPage() {
                           if (res.ok) {
                             setEditingItemId(null);
                             setItemInput('');
-                            await load();
+                            await load(false);
                           }
                         }
                       }
@@ -289,6 +302,6 @@ export default function TripPage() {
             </div>
           </div>
         )}
-    </div>
+    </SideNavShell>
   );
 }

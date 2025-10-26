@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import SideNavShell from "app/components/SideNavShell";
 
 export default function NewTripPage() {
   const router = useRouter();
@@ -66,8 +67,8 @@ export default function NewTripPage() {
   }
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
-      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8">
+    <SideNavShell>
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-8 text-stone-100">
         <h1 className="text-2xl font-bold mb-4">Create a New Trip</h1>
         <form className="space-y-4">
           <div>
@@ -99,6 +100,6 @@ export default function NewTripPage() {
           {error && <div className="text-sm text-red-400">{error}</div>}
         </form>
       </div>
-    </div>
+    </SideNavShell>
   );
 }

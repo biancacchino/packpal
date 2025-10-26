@@ -47,3 +47,9 @@ export function listShares(filter?: Partial<Pick<Share, 'friendId' | 'tripId'>>)
 export function clearShares() {
   shares = [];
 }
+
+export function removeShare(friendId: string, tripId: string): boolean {
+  const before = shares.length;
+  shares = shares.filter((s) => !(s.friendId === friendId && s.tripId === tripId));
+  return shares.length !== before;
+}

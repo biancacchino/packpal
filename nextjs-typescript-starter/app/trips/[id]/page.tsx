@@ -7,6 +7,9 @@ import SideNavShell from 'app/components/SideNavShell';
 type TripItem = { id: string; text: string; done: boolean; addedBy?: string };
 
 type Trip = { id: string; name: string; items: TripItem[]; shareToken: string };
+type AccessLevel = 'view' | 'suggest' | 'edit';
+type Share = { id: string; friendId: string; tripId: string; access: AccessLevel };
+type Friend = { id: string; name: string };
 
 export default function TripPage() {
   const params = useParams<{ id: string }>();
@@ -23,6 +26,10 @@ export default function TripPage() {
   const [nameInput, setNameInput] = useState('');
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [itemInput, setItemInput] = useState('');
+  const [accessOpen, setAccessOpen] = useState(false);
+  const [accessLoading, setAccessLoading] = useState(false);
+  const [shares, setShares] = useState<Share[]>([]);
+  const [friends, setFriends] = useState<Friend[]>([]);
   
 
   async function load(showSpinner: boolean = true) {
@@ -60,6 +67,28 @@ export default function TripPage() {
     void load();
     void loadShare();
   }, [tripId]);
+
+  useEffect(() => {
+    if (!accessOpen) return;
+    void loadAccess();
+  }, [accessOpen]);
+
+  async function loadAccess() {
+    if (!tripId) return;
+    setAccessLoading(true);
+    try {
+      const [sRes, fRes] = await Promise.all([
+        fetch(`/api/shares?tripId=${encodeURIComponent(tripId)}`, { cache: 'no-store' }),
+        fetch('/api/friends', { cache: 'no-store' }),
+      ]);
+      const sData = await sRes.json().catch(() => ({} as any));
+      const fData = await fRes.json().catch(() => ({} as any));
+      if (sRes.ok) setShares(Array.isArray(sData.shares) ? sData.shares : []);
+      if (fRes.ok) setFriends(Array.isArray(fData.friends) ? fData.friends : []);
+    } finally {
+      setAccessLoading(false);
+    }
+  }
 
   async function add() {
     const t = text.trim();
@@ -105,6 +134,7 @@ export default function TripPage() {
     if (!confirm(`Delete "${trip.name}"? This cannot be undone.`)) return;
     const res = await fetch(`/api/trips/${tripId}`, { method: 'DELETE' });
     if (res.ok || res.status === 204) {
+      try { window.dispatchEvent(new CustomEvent('trips:updated')); } catch {}
       router.push('/trips');
     }
   }
@@ -191,6 +221,14 @@ export default function TripPage() {
               className="rounded bg-emerald-500 text-black font-semibold px-3 py-2"
             >
               Copy link
+            </button>
+            <button
+              onClick={() => setAccessOpen(true)}
+              className="rounded border border-stone-700 text-stone-200 font-semibold px-3 py-2 hover:bg-stone-800"
+              aria-haspopup="dialog"
+              aria-expanded={accessOpen}
+            >
+              Access
             </button>
             <button
               onClick={() => void deleteTripAll()}
@@ -288,6 +326,41 @@ export default function TripPage() {
           {trip.items.length === 0 && <div className="text-stone-400">No items yet.</div>}
         </ul>
       </div>
+      {accessOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/60" onClick={() => setAccessOpen(false)} />
+          <div role="dialog" aria-modal="true" className="relative z-10 w-[92vw] max-w-md rounded-lg border border-stone-700 bg-stone-900 p-4 shadow-xl">
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold">Who has access</h2>
+              <button onClick={() => setAccessOpen(false)} className="rounded px-2 py-1 text-stone-300 hover:text-white">Close</button>
+            </div>
+            <div className="mt-3">
+              <div className="text-sm text-stone-300">
+                Anyone with the link can add items.
+              </div>
+              <div className="mt-3 border-t border-stone-800 pt-3">
+                {accessLoading ? (
+                  <div className="text-sm text-stone-400">Loading…</div>
+                ) : shares.length === 0 ? (
+                  <div className="text-sm text-stone-400">Not shared with any friends yet.</div>
+                ) : (
+                  <ul className="space-y-2">
+                    {shares.map((s) => {
+                      const friendName = friends.find((f) => f.id === s.friendId)?.name || s.friendId;
+                      return (
+                        <li key={s.id} className="flex items-center justify-between">
+                          <span className="text-sm text-stone-200">{friendName}</span>
+                          <span className="text-[11px] uppercase tracking-wide text-stone-400">{s.access}</span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
         {/* Toast error */}
         {error && (
           <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50">

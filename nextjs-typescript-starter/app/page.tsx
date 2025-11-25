@@ -6,7 +6,7 @@ export default function HomePage() {
       <div className="w-full max-w-xl text-center">
         <div className="mb-8 select-none">
           <span className="inline-block text-5xl md:text-6xl font-extrabold tracking-tight text-white">
-            Packpal
+            PackPal
           </span>
           <div className="mt-3 text-stone-400">
             Your smart, collaborative packing lists. ✈️🧳
@@ -29,7 +29,7 @@ export default function HomePage() {
         </div>
 
         <p className="mt-6 text-xs text-stone-500">
-          By continuing you agree to our Terms and Privacy Policy.
+          Built by Arany, Bianca, and Lori with ❤️.
         </p>
       </div>
     </main>

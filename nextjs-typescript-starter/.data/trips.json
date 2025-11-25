@@ -1,413 +1,251 @@
 {
   "trips": [
     {
-      "id": "b500672a-5e5a-4d59-8bc4-4e564bd05836",
-      "name": "nnmnmnm",
-      "shareToken": "03ea398f-6940-4cd2-8596-069c9159859b",
+      "id": "9ef28ffc-355f-433a-ab59-900233c7f1b5",
+      "name": "Cancun",
       "items": [
         {
-          "id": "c82f39df-0695-4e15-93e2-c3646ff5949e",
+          "id": "642e3360-8450-40c1-87ce-acf11d289e68",
           "text": "Phone",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "c83ec062-4ae5-44b0-8a51-44ddcbb8cb95",
+          "id": "68b7a92f-2506-476d-b6c5-ab1d4e411bb4",
+          "text": "Charger",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "17e58f47-5cf6-4f67-8637-1934c099be74",
           "text": "Wallet",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "40fa0d0d-67df-4f78-98b4-ee1e34ee972d",
-          "text": "Keys",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "4afd2783-4896-4335-9cde-82d065a62b69",
-          "text": "Chargers",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "7c151e98-37bb-4d29-b56a-d5bc465f0b0e",
-          "text": "Business shirts (5)",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "23301e1e-0f92-42e6-8db4-d1189f5a1f6e",
-          "text": "Dress pants (2)",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "3be9cecc-f029-445a-b6b5-ccc0a6df37ca",
-          "text": "Suit jacket",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "b19ee14d-ffff-4563-a60b-b0e0c2b1a9f4",
-          "text": "Underwear (7)",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "910685d5-7215-4044-a686-fbbde1b9571f",
-          "text": "Socks (7)",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "07564913-38ab-4d2c-bf8a-d13ea9023a19",
-          "text": "Belt",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "8eab8172-94bd-4f8e-a0c3-15fea6490aae",
-          "text": "Dress shoes",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "28e78790-b524-4ee0-9c04-2d1bacc60e79",
-          "text": "Casual shoes",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "e482d650-8918-4198-84e9-64fd2d5c8984",
-          "text": "Pajamas",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "f4b15da1-40fc-4e36-a59b-779f5be7c157",
-          "text": "Toothbrush",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "4020e10e-5556-4b3d-b223-a2302d05b4d2",
-          "text": "Toothpaste",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "0e27a356-70f4-4cc3-855a-bcde49d3fdfc",
-          "text": "Shampoo",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "43584e83-553f-483a-be13-f17d70fdb36c",
-          "text": "Soap",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "6ea31d1b-8e38-4759-98c5-d5aff25ff513",
-          "text": "Deodorant",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "d8bf6f72-785e-41b1-84c2-8ccb3354f205",
-          "text": "Shaving kit",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "372c24fc-1f19-4ba6-a0c6-16345ae5c099",
-          "text": "Laptop",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "4d64c09e-3f23-432d-bb22-752c3c753707",
-          "text": "Laptop charger",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "c0758068-c433-405e-9281-c5e4d56fcf0f",
-          "text": "Adapters (if needed)",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "856f7392-5101-40fe-bb5f-08ecfa64a39d",
-          "text": "Headphones",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "80ec7ba4-9574-4828-8e87-e3ba9c240b7a",
-          "text": "Driver's license",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "9bcad116-dd1a-40e2-9e61-fdf95e4475a9",
-          "text": "Passport/ID",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "749ef139-e694-4421-8693-e91f66a0d547",
-          "text": "Business cards",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "966e3b14-1568-4b71-98af-51e3f13e93a6",
-          "text": "Itinerary",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "d5751117-97e4-4967-a617-b302c8dde5d2",
-          "text": "Medications",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "b6ed191f-0a6b-446d-8dd3-636b54bbae05",
-          "text": "Pain relievers",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "9b36d58f-ee81-4a34-8211-54d581fd8373",
-          "text": "Band-aids",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "d54f0558-8b33-4148-9780-87ed70a200eb",
-          "text": "Book",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "1d8c9999-ba7c-4f7c-914d-3f79303cd885",
-          "text": "Umbrella",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "a6684207-6c89-4514-9a6e-883a54412395",
-          "text": "Okay, here's a packing list:",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "1a18ea6c-9744-40e9-8bea-50c5540c204d",
-          "text": "Sunglasses",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "19e44ed6-9235-46f0-a7c7-fd3f83c628b4",
+          "id": "38c23b7e-755e-41bb-90f7-31843c13dbd6",
           "text": "Sunscreen",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "18d88178-bd3e-4078-9672-25eb823ad36f",
-          "text": "Lip balm with SPF",
+          "id": "2a0ad3a9-2fc2-4dfc-90d3-a54f0c616c23",
+          "text": "Sunglasses",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "8209b09a-4753-42e0-b529-32dfe9a27d35",
-          "text": "Reusable water bottle",
+          "id": "a0907fe4-cf08-41c6-bd48-8e7aa4e9c171",
+          "text": "Hat",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "45fc080f-c7dc-4944-b09c-61a81fe426b6",
-          "text": "Small backpack or beach bag",
+          "id": "44598a80-3f26-4b2c-ae7b-bc4ff1f3dcdc",
+          "text": "Swimsuit (2-3)",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "237fc52b-ddb3-482a-9380-e0974b80c803",
-          "text": "Swimsuits (2-3)",
+          "id": "cd1b4e0e-2f8a-4e89-9b04-1a4015e5c4ae",
+          "text": "Swimsuit cover-up",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "ceb1c499-a036-45f0-a925-3c91a5c3c4af",
-          "text": "Cover-up(s)",
+          "id": "bac3c3bf-7cee-4318-978b-3a0e31179ed2",
+          "text": "Shorts (3-4)",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "7d8d2f7b-c9c4-45dc-882b-fb14af2e2e68",
-          "text": "Shorts (2-3 pairs)",
+          "id": "1ed99cef-f4b9-46ec-92b6-4018858ee64d",
+          "text": "T-shirts (5-7)",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "88d2a9b0-8016-474a-89de-98664d45ed83",
-          "text": "T-shirts (3-5)",
+          "id": "23865d25-183f-4564-977d-658fb06423c7",
+          "text": "Tank tops (2-3)",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "9e86a11c-4c30-4063-8303-368ad063a387",
-          "text": "Sundresses or casual outfits (2-3)",
+          "id": "32a2b6d8-c230-48f9-b753-1d6bcb6007f2",
+          "text": "Activewear (2 sets)",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "3a1298a3-3af1-4fff-9fb8-1dae2663ffc6",
-          "text": "Comfortable sandals or flip-flops",
+          "id": "a8f7e030-7118-4a2b-a398-8d875857268a",
+          "text": "Casual pants",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "b46c4efc-1c2c-477a-ab36-22b848fffde7",
-          "text": "Water shoes (if planning water activities)",
+          "id": "bb9596ec-3cc7-4111-94c3-a59a0154ec36",
+          "text": "Sandals",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "c9d126fa-33bc-436d-96f6-e5524e568f13",
+          "id": "9bcbb899-b620-4b76-b19b-14eab91ea298",
+          "text": "Water shoes",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "5b3809a1-cf99-4103-8dbd-3903708bf313",
           "text": "Underwear",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "debad2db-1726-4c15-8010-13331a5b2615",
+          "id": "bf9e4400-e621-457b-b4f0-17c508751dc7",
           "text": "Socks",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "9c5c6d0d-5fae-48ec-bcf9-f2b11a06327f",
-          "text": "Light jacket or sweater (for evenings)",
+          "id": "c6cd7a19-aa62-4f45-aae8-7ba632a0c291",
+          "text": "Pajamas",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "b41fe999-57ff-4988-af8c-447f81f0e0bd",
+          "id": "4457685f-daaa-41b9-a0ba-8c014525e10b",
+          "text": "Shampoo",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "aaf25e31-454c-4196-9fcb-459ad0e4be85",
           "text": "Conditioner",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "6d10c05e-9359-44f2-bc6e-7eb9ead28709",
+          "id": "19289cc8-8d1c-4361-a189-d63684742dbd",
           "text": "Body wash",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "2fc71536-981d-4823-8b33-8ec8051c136a",
+          "id": "e821c3d7-de1e-4fe5-aa37-18a5ad2435f7",
+          "text": "Toothbrush",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "e3a7c726-0ffd-4198-9847-b4a0ee461eba",
+          "text": "Toothpaste",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "534f8493-a7f9-4677-a0d3-bcf8bca13d3c",
+          "text": "Deodorant",
+          "done": false,
+          "addedBy": "ai"
+        },
+        {
+          "id": "dc45a5ab-e18f-4f00-8eea-a60e42385c04",
           "text": "Insect repellent",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "9eda1ea6-816f-4cca-988a-4db513d2ca0f",
+          "id": "38c85a98-1547-4c77-801b-4c2b9708bdea",
           "text": "After-sun lotion",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "61a07de0-e447-45a0-be76-884facaf6f1e",
-          "text": "Any personal care items",
+          "id": "0aefed96-1730-4b86-925b-3313106fb5f7",
+          "text": "Medications",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "bd0ebd8b-a529-417f-ae8f-7e86701340f2",
+          "id": "486ab6b1-a229-4416-9aae-a40d15a92fa1",
           "text": "Phone charger",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "176516ce-07fa-435d-9adb-a970274ade32",
-          "text": "Portable charger (optional)",
+          "id": "2ac53d04-355e-4f9d-92c9-f343642eab82",
+          "text": "Waterproof phone case",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "37570377-1879-423b-896d-330647705ed5",
-          "text": "Camera (optional)",
+          "id": "29657644-0525-47d6-9efc-c594568acccb",
+          "text": "Portable charger",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "09f3af35-71e6-413e-b2ce-963b9a64690b",
-          "text": "Passport",
+          "id": "60ee5adb-212c-4839-9bf9-c1310dd21e2e",
+          "text": "Driver's license",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "f222e525-ad6e-4ead-8074-34c066220385",
-          "text": "Flight/hotel confirmations",
+          "id": "5c78a849-09f3-49bd-84cd-b1d17978b9bd",
+          "text": "Credit cards",
+          "done": true,
+          "addedBy": "ai"
+        },
+        {
+          "id": "78441ed5-fdae-4345-9af2-527382c0814f",
+          "text": "Insurance card",
+          "done": true,
+          "addedBy": "ai"
+        },
+        {
+          "id": "17afaf63-2e75-42a9-94ac-500420b6d63f",
+          "text": "Reservations",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "5937bc49-4236-4706-8f07-ddf4ebad38b9",
-          "text": "Insurance information",
+          "id": "7b795aaf-eae2-416e-b91a-1dabdfad66c4",
+          "text": "Pain relievers",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "e1e11b1a-878d-4d5d-a33b-9e3181773d46",
-          "text": "Any prescription medications",
+          "id": "480dea8c-9199-42e6-8976-1deb96c1496c",
+          "text": "Motion sickness remedy",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "8cc6310f-9b40-4037-8d3a-d4f0d081bec1",
-          "text": "Motion sickness medication (if needed)",
+          "id": "86e300f4-7d43-42b5-a6bd-b1505986c2c3",
+          "text": "Band-aids",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "1a266f32-b7ef-47cb-a4b0-42574f43be11",
-          "text": "Antacids or digestive aids",
+          "id": "2895c5ea-4220-451a-87c1-a4bfea30abeb",
+          "text": "Book",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "9d613b23-77b7-4853-af7a-e46795b94161",
+          "id": "e29313ad-b607-420c-82d9-025ac5455322",
           "text": "Snorkel gear",
           "done": false,
           "addedBy": "ai"
         },
         {
-          "id": "c598e8d0-8221-4130-8c51-e5addb1476ad",
-          "text": "Books or magazines",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "6a82a54d-5706-47e0-9752-7da9116ba123",
-          "text": "Travel pillow",
-          "done": false,
-          "addedBy": "ai"
-        },
-        {
-          "id": "013d4308-2ac2-44d7-ba95-b9f76626c365",
-          "text": "Reusable shopping bag",
+          "id": "3c4d25c3-8a12-4c29-94d9-660948b54965",
+          "text": "Camera",
           "done": false,
           "addedBy": "ai"
         }
-      ]
-    },
-    {
-      "id": "295757cc-d8cc-450a-b380-33d350bfaf85",
-      "name": "sarah",
-      "items": [],
-      "shareToken": "4b19befc-202e-4456-a46a-148675b8d279"
+      ],
+      "shareToken": "dca344c4-d232-41f7-ba36-618628263aaf"
     }
   ]
 }

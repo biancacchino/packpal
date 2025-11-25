@@ -7,9 +7,9 @@ export default auth((req) => {
   const isLoggedIn = !!req.auth?.user;
   const isAuthPage = nextUrl.pathname.startsWith('/login') || nextUrl.pathname.startsWith('/register');
 
-  if (isLoggedIn && isAuthPage) {
-    return NextResponse.redirect(new URL('/dashboard', nextUrl));
-  }
+  // if (isLoggedIn && isAuthPage) {
+  //   return NextResponse.redirect(new URL('/dashboard', nextUrl));
+  // }
   return NextResponse.next();
 });
 

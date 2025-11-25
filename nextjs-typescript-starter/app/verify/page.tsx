@@ -25,8 +25,7 @@ function VerifyContent() {
       .then((data) => {
         if (data.ok) {
           setStatus('success');
-          // Redirect to login with verified query param
-          setTimeout(() => router.push('/login?verified=true'), 2000);
+          router.push('/login?verified=true');
         } else {
           setStatus('error');
         }

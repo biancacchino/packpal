@@ -18,6 +18,10 @@ export function LoginFormClient() {
     if (searchParams.get("verified") === "true") {
       setSuccess("Email verified successfully! Please log in.");
     }
+    const errorParam = searchParams.get("error");
+    if (errorParam) {
+      setError("Invalid email or password, or email not verified.");
+    }
   }, [searchParams]);
 
   async function onSubmit(e: React.FormEvent) {
@@ -30,6 +34,7 @@ export function LoginFormClient() {
         email,
         password,
         redirect: false,
+        callbackUrl: "/dashboard",
       });
 
       setLoading(false);

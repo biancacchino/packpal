@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Trip } from "app/components/TripCarousel";
 import type { Share } from "app/sharesStore";
 import type { Friend } from "app/friendsStore";
+import FriendsTripsList from "./FriendsTripsList";
 
 function NavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick?: () => void }) {
   const pathname = usePathname();
@@ -47,6 +48,15 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
     };
   }, []);
   const [trips, setTrips] = useState<Trip[]>([]);
+  const reloadTrips = async () => {
+    try {
+      const res = await fetch('/api/trips', { cache: 'no-store' });
+      const data = await res.json();
+      setTrips(Array.isArray(data.trips) ? data.trips : []);
+    } catch {
+      setTrips([]);
+    }
+  };
   useEffect(() => {
     let abort = false;
     (async () => {
@@ -58,7 +68,9 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
         if (!abort) setTrips([]);
       }
     })();
-    return () => { abort = true; };
+    const onTripsUpdated = () => { if (!abort) void reloadTrips(); };
+    window.addEventListener('trips:updated', onTripsUpdated as EventListener);
+    return () => { abort = true; window.removeEventListener('trips:updated', onTripsUpdated as EventListener); };
   }, []);
 
   const [shares, setShares] = useState<Share[]>([]);
@@ -82,18 +94,7 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
     return () => { abort = true; };
   }, []);
 
-  const tripTitle = (id: string) => trips.find(t => t.id === id)?.name ?? `Trip ${id}`;
-  const friendsWithShares = useMemo(() => {
-    const byFriend = new Map<string, { friendId: string; friendName: string; tripIds: string[] }>();
-    for (const f of friends) byFriend.set(f.id, { friendId: f.id, friendName: f.name, tripIds: [] });
-    for (const s of shares) {
-      if (!byFriend.has(s.friendId)) continue;
-      if (trips.some(t => t.id === s.tripId)) {
-        byFriend.get(s.friendId)!.tripIds.push(s.tripId);
-      }
-    }
-    return Array.from(byFriend.values()).filter(g => g.tripIds.length > 0);
-  }, [friends, shares, trips]);
+  const hasShares = useMemo(() => shares.some(s => trips.some(t => t.id === s.tripId)), [shares, trips]);
 
   return (
     <div>
@@ -105,20 +106,9 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
           <NavLink href="/trips">Trips</NavLink>
           <NavLink href="/friends">Friends</NavLink>
           {/* Friends -> trips grouping */}
-          {friendsWithShares.length > 0 && (
+          {hasShares && (
             <div className="mt-2 space-y-1">
-              {friendsWithShares.map((g) => (
-                <div key={g.friendId} className="px-1">
-                  <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-stone-400/80">{g.friendName}</div>
-                  <ul className="ml-2 border-l border-stone-800/70 pl-2 space-y-0.5">
-                    {g.tripIds.map((tid) => (
-                      <li key={tid}>
-                        <NavLink href={`/trips/${tid}`}>{tripTitle(tid)}</NavLink>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+              <FriendsTripsList friends={friends} trips={trips} shares={shares} compact />
             </div>
           )}
         </nav>
@@ -147,20 +137,9 @@ export default function SideNav({ open, onClose }: { open: boolean; onClose: () 
             <NavLink href="/trips" onClick={onClose}>Trips</NavLink>
             <NavLink href="/friends" onClick={onClose}>Friends</NavLink>
             {/* Friends -> trips grouping */}
-            {friendsWithShares.length > 0 && (
+            {hasShares && (
               <div className="mt-2 space-y-1">
-                {friendsWithShares.map((g) => (
-                  <div key={g.friendId} className="px-1">
-                    <div className="px-2 py-1 text-[11px] uppercase tracking-wide text-stone-400/80">{g.friendName}</div>
-                    <ul className="ml-2 border-l border-stone-800/70 pl-2 space-y-0.5">
-                      {g.tripIds.map((tid) => (
-                        <li key={tid}>
-                          <NavLink href={`/trips/${tid}`} onClick={onClose}>{tripTitle(tid)}</NavLink>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
+                <FriendsTripsList friends={friends} trips={trips} shares={shares} compact />
               </div>
             )}
           </nav>

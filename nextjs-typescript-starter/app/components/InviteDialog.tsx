@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useMemo, useState } from 'react';
+import { useEffect, useId, useState } from 'react';
+import type { Trip } from 'app/components/TripCarousel';
 import type { AccessLevel } from 'app/sharesStore';
 
 type Props = {
@@ -10,17 +11,13 @@ type Props = {
   onInvited?: (result: { tripId: string; access: AccessLevel }) => void;
 };
 
-const sampleTrips = [
-  { id: '1', title: 'Cancún Trip 🌴' },
-  { id: '2', title: 'NYC Weekend 🗽' },
-  { id: '3', title: 'Banff Ski Trip ⛷️' },
-];
-
 export default function InviteDialog({ open, onClose, friend, onInvited }: Props) {
   const [tripId, setTripId] = useState<string>('');
   const [access, setAccess] = useState<AccessLevel>('view');
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [tripsLoading, setTripsLoading] = useState(false);
   const titleId = useId();
 
   useEffect(() => {
@@ -28,10 +25,25 @@ export default function InviteDialog({ open, onClose, friend, onInvited }: Props
       setTripId('');
       setAccess('view');
       setError(null);
+      // Load real trips every time the dialog opens
+      let abort = false;
+      (async () => {
+        setTripsLoading(true);
+        try {
+          const res = await fetch('/api/trips', { cache: 'no-store' });
+          const data = await res.json();
+          if (!abort) setTrips(Array.isArray(data.trips) ? data.trips : []);
+        } catch {
+          if (!abort) setTrips([]);
+        } finally {
+          if (!abort) setTripsLoading(false);
+        }
+      })();
+      return () => {
+        abort = true;
+      };
     }
   }, [open]);
-
-  const trips = sampleTrips;
 
   if (!open) return null;
 
@@ -78,8 +90,12 @@ export default function InviteDialog({ open, onClose, friend, onInvited }: Props
               className="w-full rounded-md bg-stone-800 border border-stone-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
             >
               <option value="" disabled>Select a trip</option>
-              {trips.map((t) => (
-                <option key={t.id} value={t.id}>{t.title}</option>
+              {tripsLoading && <option value="" disabled>Loading…</option>}
+              {!tripsLoading && trips.length === 0 && (
+                <option value="" disabled>No trips yet</option>
+              )}
+              {!tripsLoading && trips.map((t) => (
+                <option key={t.id} value={t.id}>{t.name}</option>
               ))}
             </select>
           </div>

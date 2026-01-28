@@ -6,6 +6,7 @@ import SideNavShell from "app/components/SideNavShell";
 import type { Share } from "app/sharesStore";
 import type { Trip } from "app/components/TripCarousel";
 import type { Friend } from "app/friendsStore";
+import FriendsTripsList from "app/components/FriendsTripsList";
 
 export default function FriendsPage() {
   // Live friends list from API (can add more via search+add)
@@ -225,53 +226,13 @@ export default function FriendsPage() {
           </div>
         </section>
 
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {friends
-            .filter((f) => f.name.toLowerCase().includes(search.trim().toLowerCase()))
-            .map((f) => {
-            const fShares = shares.filter(s => s.friendId === f.id);
-            // Deduplicate and keep only trip ids that exist
-            const uniqueTripIds = Array.from(
-              new Set(fShares.map((s) => s.tripId).filter((tid) => trips.some((t) => t.id === tid)))
-            );
-            return (
-              <section key={f.id} className="rounded-lg border border-stone-800 bg-stone-900/60 p-4">
-                <h2 className="text-base font-semibold text-white">{f.name}</h2>
-                <ul className="mt-3 space-y-1">
-                  {uniqueTripIds.length > 0 ? (
-                    uniqueTripIds.map((tid) => {
-                      const sh = fShares.find((s) => s.tripId === tid);
-                      const access = sh?.access ?? 'view';
-                      return (
-                        <li key={tid} className="flex items-center justify-between gap-3">
-                          <div className="flex items-center gap-2 flex-1">
-                            <span className="truncate text-sm text-stone-200">{tripTitle(tid)}</span>
-                            <span className="text-[11px] uppercase tracking-wide text-stone-400">{access}</span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Link
-                              href={`/trips/${tid}`}
-                              className="text-xs px-2 py-1 rounded bg-stone-800 border border-stone-700 hover:bg-stone-700"
-                            >
-                              View
-                            </Link>
-                            <button
-                              onClick={() => void uninvite(f.id, tid)}
-                              className="text-xs px-2 py-1 rounded border border-stone-700 hover:bg-stone-800"
-                            >
-                              Uninvite
-                            </button>
-                          </div>
-                        </li>
-                      );
-                    })
-                  ) : (
-                    <li className="text-sm text-stone-400">No shared trips yet</li>
-                  )}
-                </ul>
-              </section>
-            );
-          })}
+        <div className="mt-6">
+          <FriendsTripsList
+            friends={friends.filter((f) => f.name.toLowerCase().includes(search.trim().toLowerCase()))}
+            trips={trips}
+            shares={shares}
+            onUninvite={(fid, tid) => void uninvite(fid, tid)}
+          />
         </div>
 
         {loading && (

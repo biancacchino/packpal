@@ -81,6 +81,7 @@ function TripsContent() {
     if (res.ok) {
       setName('');
       await load();
+      try { window.dispatchEvent(new CustomEvent('trips:updated')); } catch {}
     }
   }
 
@@ -91,6 +92,7 @@ function TripsContent() {
       const res = await fetch(`/api/trips/${id}`, { method: 'DELETE' });
       if (res.ok || res.status === 204) {
         await load();
+        try { window.dispatchEvent(new CustomEvent('trips:updated')); } catch {}
       }
     } finally {
       setDeletingId(null);

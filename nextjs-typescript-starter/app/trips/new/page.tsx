@@ -58,6 +58,8 @@ export default function NewTripPage() {
       }
       // Optionally clear draft after saving
       try { localStorage.removeItem("packpal_trip_draft"); } catch {}
+      // Notify other parts of the app that trips changed
+      try { window.dispatchEvent(new CustomEvent('trips:updated')); } catch {}
       // Go to dashboard so it's visible in the list/carousel
       router.push("/dashboard");
     } catch (e) {
